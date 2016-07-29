@@ -4,9 +4,12 @@ import android.content.Context;
 import android.location.Location;
 import android.util.Log;
 
+import java.util.List;
+
 import io.realm.Realm;
+import io.realm.RealmList;
 import rx.Observable;
-import rx.functions.Func2;
+import rx.functions.Func3;
 
 /**
  * Created by remirobert on 26/07/16.
@@ -17,18 +20,28 @@ public class RecordManager {
 
     private com.remirobert.remirobert.signalstrentgh.LocationManager mLocationManager;
     private SignalObserver mSignalObserver;
+    private CellTowerManager mCellTowerManager;
     private Context mContext;
 
     public Observable<Record> fetchRecord() {
-        return Observable.combineLatest(mSignalObserver.observeOnce(), mLocationManager.getLocation(),
-                new Func2<SignalRecord, Location, Record>() {
+        return Observable.combineLatest(mSignalObserver.observeOnce(),
+                mLocationManager.getLocation(),
+                mCellTowerManager.nerbyTower(),
+                new Func3<SignalRecord, Location, List<CellularTower>, Record>() {
             @Override
-            public Record call(SignalRecord signalRecord, Location location) {
+            public Record call(SignalRecord signalRecord, Location location, List<CellularTower> cellularTowers) {
                 Log.v(TAG, "start creating record...");
                 Record record = new Record();
                 if (location != null) {
                     record.setLatitude(location.getLatitude());
                     record.setLongitude(location.getLongitude());
+                }
+                if (cellularTowers != null) {
+                    RealmList<CellularTower> cellularTowerRealmList = new RealmList<>();
+                    for (CellularTower tower : cellularTowers) {
+                        cellularTowerRealmList.add(tower);
+                    }
+                    record.setCellularTowers(cellularTowerRealmList);
                 }
                 record.setSignalRecord(signalRecord);
                 Realm realm = Realm.getDefaultInstance();
@@ -45,5 +58,6 @@ public class RecordManager {
 
         mLocationManager = new LocationManager(mContext);
         mSignalObserver = new SignalObserver(mContext);
+        mCellTowerManager = new CellTowerManager(mContext);
     }
 }

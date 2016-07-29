@@ -28,7 +28,7 @@ import rx.functions.FuncN;
 
 //http://opencellid.org/cell/get?key=e5dad4a2-e436-412c-8178-064b8fef2ecc&mcc=208&mnc=15&lac=3300&cellid=104187198&format=json
 
-public class CellTowerProximityInfo {
+public class CellTowerManager {
 
     private static final String TAG = "CellTowerProximityInfo";
 
@@ -86,6 +86,9 @@ public class CellTowerProximityInfo {
         List<CellularTower> cellularTowerList = new ArrayList<>();
 
         cellInfoList = mTelephonyManager.getAllCellInfo();
+        if (cellInfoList == null || cellInfoList.size() == 0) {
+            return cellularTowerList;
+        }
 
         for (int i = 0; i < cellInfoList.size(); i++) {
             final CellInfo cellInfo = cellInfoList.get(i);
@@ -142,16 +145,17 @@ public class CellTowerProximityInfo {
             @Override
             public void call(final Subscriber<? super List<CellularTower>> subscriber) {
                 final List<CellularTower> cellularTowerList = getTowerList();
+                List<Observable<CellularTower>> observableList = new ArrayList<>();
 
-                CellularTower cellularTower = cellularTowerList.get(0);
-                Observable<CellularTower> observable1 = locationTower(cellularTower);
-                Observable<CellularTower> observable2 = locationTower(cellularTower);
-                Observable<CellularTower> observable3 = locationTower(cellularTower);
+                if (cellularTowerList.size() == 0) {
+                    subscriber.onNext(cellularTowerList);
+                    subscriber.onCompleted();
+                }
 
-                List<Observable<CellularTower>> observableList = new ArrayList<Observable<CellularTower>>();
-                observableList.add(observable1);
-                observableList.add(observable2);
-                observableList.add(observable3);
+                for (CellularTower tower : cellularTowerList) {
+                    Observable<CellularTower> observable = locationTower(tower);
+                    observableList.add(observable);
+                }
 
                 rx.Observable.zip(observableList, new FuncN<List<CellularTower>>() {
                     @Override
@@ -193,7 +197,7 @@ public class CellTowerProximityInfo {
         });
     }
 
-    public CellTowerProximityInfo(Context context) {
+    public CellTowerManager(Context context) {
         mContext = context;
         mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
     }

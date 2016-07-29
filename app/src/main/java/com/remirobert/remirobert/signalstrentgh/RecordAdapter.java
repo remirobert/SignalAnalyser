@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordViewHolder> {
 
-    private List<CellularTower> mCellularTowers;
+    private List<Record> mRecordList;
 
     public static class RecordViewHolder extends RecyclerView.ViewHolder {
         CardView cv;
@@ -32,15 +32,16 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
 
     @Override
     public void onBindViewHolder(final RecordViewHolder holder, final int position) {
-        final CellularTower cellularTower = mCellularTowers.get(position);
-        holder.title.setText("CID Title : " + cellularTower.getCid());
-        holder.subtitle.setText("Subtitle LAC : " + cellularTower.getLac());
+        final Record record = mRecordList.get(position);
+        holder.title.setText("title");
+        holder.title.setText("towers : " + record.getCellularTowers().size());
+        holder.subtitle.setText(record.getDate().toString());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(holder.itemView.getContext(), DetailRecordActivity.class);
-                myIntent.putExtra("record", cellularTower.getId());
+                myIntent.putExtra("record", record.getId());
                 holder.itemView.getContext().startActivity(myIntent);
             }
         });
@@ -48,7 +49,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
 
     @Override
     public int getItemCount() {
-        return mCellularTowers.size();
+        return mRecordList.size();
     }
 
     @Override
@@ -58,8 +59,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
         return pvh;
     }
 
-    public RecordAdapter(List<CellularTower> cellularTowers) {
-        mCellularTowers = cellularTowers;
+    public RecordAdapter(List<Record> recordList) {
+        mRecordList = recordList;
     }
 
     @Override

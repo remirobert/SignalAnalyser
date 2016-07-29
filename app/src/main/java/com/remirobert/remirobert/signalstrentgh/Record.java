@@ -1,5 +1,6 @@
 package com.remirobert.remirobert.signalstrentgh;
 
+import java.util.Date;
 import java.util.UUID;
 
 import io.realm.RealmList;
@@ -16,9 +17,15 @@ public class Record extends RealmObject {
     private RealmList<CellularTower> mCellularTowers;
     private double latitude;
     private double longitude;
+    private Date mDate;
 
     public Record() {
         mId = UUID.randomUUID().toString();
+        mDate = new Date();
+    }
+
+    public Date getDate() {
+        return mDate;
     }
 
     public SignalRecord getSignalRecord() {
@@ -51,5 +58,9 @@ public class Record extends RealmObject {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getId() {
+        return mId;
     }
 }
