@@ -15,7 +15,8 @@
     <com.mapbox.mapboxsdk.maps.MapView
            android:id="@+id/mapView"
            android:layout_width="match_parent"
-           android:layout_height="match_parent"
+           android:layout_height="250
+           dp"
            mapbox:style_url="mapbox://styles/mapbox/streets-v9"
            mapbox:zoom="11"/>
 
