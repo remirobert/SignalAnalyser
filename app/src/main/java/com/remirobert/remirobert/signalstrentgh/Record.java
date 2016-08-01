@@ -14,6 +14,8 @@ public class Record extends RealmObject {
     @PrimaryKey
     private String mId;
     private SignalRecord mSignalRecord;
+    private Battery mBattery;
+    private Device mDevice;
     private RealmList<CellularTower> mCellularTowers;
     private double latitude;
     private double longitude;
@@ -22,6 +24,22 @@ public class Record extends RealmObject {
     public Record() {
         mId = UUID.randomUUID().toString();
         mDate = new Date();
+    }
+
+    public Battery getBattery() {
+        return mBattery;
+    }
+
+    public void setBattery(Battery battery) {
+        mBattery = battery;
+    }
+
+    public Device getDevice() {
+        return mDevice;
+    }
+
+    public void setDevice(Device device) {
+        mDevice = device;
     }
 
     public Date getDate() {
