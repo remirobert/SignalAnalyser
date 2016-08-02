@@ -1,6 +1,5 @@
 package com.remirobert.remirobert.signalstrentgh;
 
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 
@@ -20,17 +19,8 @@ public class SignalRecord extends RealmObject {
     private int db;
     private double level;
     private boolean isGsm;
-    private RealmList<CellularTower> mCellularTowers;
 
     public SignalRecord() {
-    }
-
-    public RealmList<CellularTower> getCellularTowers() {
-        return mCellularTowers;
-    }
-
-    public void setCellularTowers(RealmList<CellularTower> cellularTowers) {
-        mCellularTowers = cellularTowers;
     }
 
     public int getStatutSignal() {

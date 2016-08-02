@@ -8,7 +8,7 @@ import android.telephony.TelephonyManager;
  */
 public class DeviceManager {
 
-    public Device information(Context context) {
+    public static Device information(Context context) {
         Device device = new Device();
 
         String serviceName = Context.TELEPHONY_SERVICE;

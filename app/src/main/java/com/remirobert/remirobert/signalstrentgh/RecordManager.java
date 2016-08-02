@@ -9,7 +9,7 @@ import java.util.List;
 import io.realm.Realm;
 import io.realm.RealmList;
 import rx.Observable;
-import rx.functions.Func3;
+import rx.functions.Func4;
 
 /**
  * Created by remirobert on 26/07/16.
@@ -21,15 +21,17 @@ public class RecordManager {
     private com.remirobert.remirobert.signalstrentgh.LocationManager mLocationManager;
     private SignalObserver mSignalObserver;
     private CellTowerManager mCellTowerManager;
+    private BatteryManager mBatteryManager;
     private Context mContext;
 
     public Observable<Record> fetchRecord() {
         return Observable.combineLatest(mSignalObserver.observeOnce(),
                 mLocationManager.getLocation(),
                 mCellTowerManager.nerbyTower(),
-                new Func3<SignalRecord, Location, List<CellularTower>, Record>() {
+                mBatteryManager.getBatteryLevel(),
+                new Func4<SignalRecord, Location, List<CellularTower>, Battery, Record>() {
             @Override
-            public Record call(SignalRecord signalRecord, Location location, List<CellularTower> cellularTowers) {
+            public Record call(SignalRecord signalRecord, Location location, List<CellularTower> cellularTowers, Battery battery) {
                 Log.v(TAG, "start creating record...");
                 Record record = new Record();
                 if (location != null) {
@@ -43,6 +45,8 @@ public class RecordManager {
                     }
                     record.setCellularTowers(cellularTowerRealmList);
                 }
+                record.setBattery(battery);
+                record.setDevice(DeviceManager.information(mContext));
                 record.setSignalRecord(signalRecord);
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
@@ -59,5 +63,6 @@ public class RecordManager {
         mLocationManager = new LocationManager(mContext);
         mSignalObserver = new SignalObserver(mContext);
         mCellTowerManager = new CellTowerManager(mContext);
+        mBatteryManager = new BatteryManager(mContext);
     }
 }
