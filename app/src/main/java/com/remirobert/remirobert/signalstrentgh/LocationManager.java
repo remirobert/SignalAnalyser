@@ -24,7 +24,9 @@ public class LocationManager {
     private final android.location.LocationListener mLocationListener = new android.location.LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
-            Log.v(TAG, "get Location okay");
+            Log.v(TAG, "get Location user");
+            Log.v(TAG, "Latitude :        " + location.getLatitude());
+            Log.v(TAG, "Longitude :       " + location.getLongitude());
             mLocationOnSubscribe.onNext(location);
             mLocationOnSubscribe.onCompleted();
             stopListening();
@@ -53,7 +55,9 @@ public class LocationManager {
 
         Location location = mLocationManager.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER);
         if (location != null) {
-            Log.v("Location manager", "get Location okay");
+            Log.v(TAG, "get Location user");
+            Log.v(TAG, "Latitude :        " + location.getLatitude());
+            Log.v(TAG, "Longitude :       " + location.getLongitude());
             mLocationOnSubscribe.onNext(location);
             mLocationOnSubscribe.onCompleted();
             return;

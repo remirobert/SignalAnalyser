@@ -19,4 +19,13 @@
            mapbox:style_url="mapbox://styles/mapbox/streets-v9"
            mapbox:zoom="11"/>
 
+    <ListView
+        android:id="@+id/list"
+        android:layout_below="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </ListView>
+
 </RelativeLayout>
