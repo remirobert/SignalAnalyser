@@ -18,6 +18,9 @@ public class CellularTower extends RealmObject implements Serializable {
     private int cid;
     private double lat;
     private double lon;
+    private int asuLevel;
+    private int signalLevel;
+    private double signalDbm;
 
     public CellularTower() {
         this.id = UUID.randomUUID().toString();
@@ -73,5 +76,29 @@ public class CellularTower extends RealmObject implements Serializable {
 
     public void setLon(double lon) {
         this.lon = lon;
+    }
+
+    public int getAsuLevel() {
+        return asuLevel;
+    }
+
+    public void setAsuLevel(int asuLevel) {
+        this.asuLevel = asuLevel;
+    }
+
+    public int getSignalLevel() {
+        return signalLevel;
+    }
+
+    public void setSignalLevel(int signalLevel) {
+        this.signalLevel = signalLevel;
+    }
+
+    public double getSignalDbm() {
+        return signalDbm;
+    }
+
+    public void setSignalDbm(double signalDbm) {
+        this.signalDbm = signalDbm;
     }
 }

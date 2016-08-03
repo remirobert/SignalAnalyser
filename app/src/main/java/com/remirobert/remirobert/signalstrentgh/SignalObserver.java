@@ -1,6 +1,8 @@
 package com.remirobert.remirobert.signalstrentgh;
 
 import android.content.Context;
+import android.telephony.CellInfoGsm;
+import android.telephony.CellSignalStrengthGsm;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;

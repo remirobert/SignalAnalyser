@@ -61,6 +61,11 @@ public class CellTowerManager {
             cellularTower.setLac(cellIdentityWcdma.getLac());
             cellularTower.setMcc(cellIdentityWcdma.getMcc());
             cellularTower.setMnc(cellIdentityWcdma.getMnc());
+            if (cellInfoWcdma.getCellSignalStrength() != null) {
+                cellularTower.setAsuLevel(cellInfoWcdma.getCellSignalStrength().getAsuLevel());
+                cellularTower.setSignalLevel(cellInfoWcdma.getCellSignalStrength().getLevel());
+                cellularTower.setSignalDbm(cellInfoWcdma.getCellSignalStrength().getDbm());
+            }
         } else if (cellInfo instanceof CellInfoLte) {
             CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
             CellIdentityLte cellIdentityLte = cellInfoLte.getCellIdentity();
@@ -69,6 +74,11 @@ public class CellTowerManager {
             cellularTower.setMnc(cellIdentityLte.getMnc());
             cellularTower.setMcc(cellIdentityLte.getMcc());
             cellularTower.setLac(cellIdentityLte.getTac());
+            if (cellInfoLte.getCellSignalStrength() != null) {
+                cellularTower.setAsuLevel(cellInfoLte.getCellSignalStrength().getAsuLevel());
+                cellularTower.setSignalLevel(cellInfoLte.getCellSignalStrength().getLevel());
+                cellularTower.setSignalDbm(cellInfoLte.getCellSignalStrength().getDbm());
+            }
         } else if (cellInfo instanceof CellInfoGsm) {
             CellInfoGsm cellInfoGsm = (CellInfoGsm) cellInfo;
             CellIdentityGsm cellIdentityGsm = cellInfoGsm.getCellIdentity();
@@ -77,6 +87,11 @@ public class CellTowerManager {
             cellularTower.setLac(cellIdentityGsm.getLac());
             cellularTower.setMcc(cellIdentityGsm.getMcc());
             cellularTower.setMnc(cellIdentityGsm.getMnc());
+            if (cellInfoGsm.getCellSignalStrength() != null) {
+                cellularTower.setAsuLevel(cellInfoGsm.getCellSignalStrength().getAsuLevel());
+                cellularTower.setSignalLevel(cellInfoGsm.getCellSignalStrength().getLevel());
+                cellularTower.setSignalDbm(cellInfoGsm.getCellSignalStrength().getDbm());
+            }
         }
         return checkInvalidData(cellularTower);
     }
