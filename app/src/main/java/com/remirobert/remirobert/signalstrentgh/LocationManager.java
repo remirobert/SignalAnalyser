@@ -1,9 +1,11 @@
 package com.remirobert.remirobert.signalstrentgh;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import rx.Observable;
@@ -50,30 +52,56 @@ public class LocationManager {
         }
     };
 
-    private void startListening() {
-        mLocationManager =  (android.location.LocationManager) mContext.getSystemService(mContext.LOCATION_SERVICE);
+    private String getBestProvider() {
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        return mLocationManager.getBestProvider(criteria, true);
+    }
 
-        Location location = mLocationManager.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER);
-        if (location != null) {
-            Log.v(TAG, "get Location user");
-            Log.v(TAG, "Latitude :        " + location.getLatitude());
-            Log.v(TAG, "Longitude :       " + location.getLongitude());
-            mLocationOnSubscribe.onNext(location);
-            mLocationOnSubscribe.onCompleted();
-            return;
-        }
+    private void startListening() {
+        mLocationManager = (android.location.LocationManager) mContext.getSystemService(mContext.LOCATION_SERVICE);
         Log.v(TAG, "start request listener");
-        mLocationManager.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER,
-                LOCATION_REFRESH_TIME,
-                LOCATION_REFRESH_DISTANCE,
-                mLocationListener);
+
+        if (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            String provider = getBestProvider();
+
+            Log.v(TAG, "Best provider selected : " + provider);
+
+            Location lastKnownLocation = mLocationManager.getLastKnownLocation(provider);
+            if (lastKnownLocation != null) {
+                mLocationOnSubscribe.onNext(lastKnownLocation);
+                mLocationOnSubscribe.onCompleted();
+                return;
+            }
+
+            if (!mLocationManager.isProviderEnabled(provider)) {
+                Log.v(TAG, "Provider not available = " + provider);
+                mLocationOnSubscribe.onNext(null);
+                mLocationOnSubscribe.onCompleted();
+            }
+            mLocationManager.requestSingleUpdate(provider, mLocationListener, null);
+        }
+        else {
+            Log.v(TAG, "Check permission location failed");
+            mLocationOnSubscribe.onNext(null);
+            mLocationOnSubscribe.onCompleted();
+        }
     }
 
     private void stopListening() {
-        mLocationManager.removeUpdates(mLocationListener);
+        if (ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(mContext, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationManager.removeUpdates(mLocationListener);
+        }
     }
 
-    public Observable<Location>getLocation() {
+    public Observable<Location> getLocation() {
         Log.v(TAG, "get location [permission okay]");
         return rx.Observable.create(new Observable.OnSubscribe<Location>() {
             @Override

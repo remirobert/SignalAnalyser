@@ -16,6 +16,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +36,9 @@ public class DetailRecordActivity extends AppCompatActivity {
 
         ListInfo infoDate = new ListInfo();
         infoDate.setTitle("Record the :");
-        infoDate.setContent(mRecord.getDate().toString());
+        SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy  hh:mm a");
+        String date = format.format(java.sql.Date.parse(mRecord.getDate().toString()));
+        infoDate.setContent(date);
 
         ListInfo infoAndroidVersion = new ListInfo();
         infoAndroidVersion.setTitle("Android version :");

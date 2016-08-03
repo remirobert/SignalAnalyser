@@ -35,8 +35,12 @@ public class RecordManager {
                 Log.v(TAG, "start creating record...");
                 Record record = new Record();
                 if (location != null) {
+                    Log.v(TAG, "Location user : " + location.getLatitude() + " : " + location.getLongitude());
                     record.setLatitude(location.getLatitude());
                     record.setLongitude(location.getLongitude());
+                }
+                else {
+                    Log.v(TAG, "Location user failed");
                 }
                 if (cellularTowers != null) {
                     RealmList<CellularTower> cellularTowerRealmList = new RealmList<>();

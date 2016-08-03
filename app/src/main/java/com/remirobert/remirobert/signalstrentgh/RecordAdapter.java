@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.common.collect.Lists;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -33,9 +36,11 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     @Override
     public void onBindViewHolder(final RecordViewHolder holder, final int position) {
         final Record record = mRecordList.get(position);
-        holder.title.setText("title");
-        holder.title.setText("towers : " + record.getCellularTowers().size());
-        holder.subtitle.setText(record.getDate().toString());
+        holder.title.setText("#" + (mRecordList.size() - position));
+
+        SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy  hh:mm a");
+        String date = format.format(java.sql.Date.parse(record.getDate().toString()));
+        holder.subtitle.setText(date);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,7 +65,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     }
 
     public RecordAdapter(List<Record> recordList) {
-        mRecordList = recordList;
+        mRecordList = Lists.reverse(recordList);
     }
 
     @Override
