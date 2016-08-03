@@ -3,9 +3,9 @@ package com.remirobert.remirobert.signalstrentgh;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -26,49 +26,120 @@ public class DetailRecordActivity extends AppCompatActivity {
 
     private final static String TAG = "DetailRecordActivity";
 
-    private ListView mListView;
+    private RecyclerView mListView;
     private MapView mMapView;
     private Record mRecord;
+
+    private List<ListInfo>getDataAdaptator() {
+        List<ListInfo> listInfos = new ArrayList<>();
+
+        ListInfo infoDate = new ListInfo();
+        infoDate.setTitle("Record the :");
+        infoDate.setContent(mRecord.getDate().toString());
+
+        ListInfo infoAndroidVersion = new ListInfo();
+        infoAndroidVersion.setTitle("Android version :");
+        infoAndroidVersion.setContent(mRecord.getDevice().getOsVersion());
+
+        ListInfo infoAndroidApi = new ListInfo();
+        infoAndroidApi.setTitle("Android API level :");
+        infoAndroidApi.setContent(mRecord.getDevice().getApiLevel());
+
+        ListInfo infoDevice = new ListInfo();
+        infoDevice.setTitle("Device model :");
+        infoDevice.setContent(mRecord.getDevice().getDevice());
+
+        ListInfo infoProduct = new ListInfo();
+        infoProduct.setTitle("Product name :");
+        infoProduct.setContent(mRecord.getDevice().getProduct());
+
+        ListInfo infoCode1 = new ListInfo();
+        infoCode1.setTitle("IMEI :");
+        infoCode1.setContent(mRecord.getDevice().getIMEI());
+
+        ListInfo infoCode2 = new ListInfo();
+        infoCode2.setTitle("IMSI");
+        infoCode2.setContent(mRecord.getDevice().getIMSI());
+
+        ListInfo infoBatteryPercent = new ListInfo();
+        infoBatteryPercent.setTitle("Battery percent :");
+        infoBatteryPercent.setContent(mRecord.getBattery().getLevel() + "%");
+
+        ListInfo infoBatteryCapacity = new ListInfo();
+        infoBatteryCapacity.setTitle("Battery capacity :");
+        infoBatteryCapacity.setContent(mRecord.getBattery().getCapacity() + " mha");
+
+        ListInfo infoStatusSignal = new ListInfo();
+        infoStatusSignal.setTitle("Signal status :");
+        infoStatusSignal.setContent(mRecord.getSignalRecord().getStatutSignal() + "");
+
+        ListInfo infoSignalNoise = new ListInfo();
+        infoSignalNoise.setTitle("Signal noise :");
+        infoSignalNoise.setContent(mRecord.getSignalRecord().getNoise() + " db");
+
+        ListInfo infoSignalDb = new ListInfo();
+        infoSignalDb.setTitle("Signal strength :");
+        infoSignalDb.setContent(mRecord.getSignalRecord().getDb() + " db");
+
+        ListInfo infoSignalEvdoEci = new ListInfo();
+        infoSignalEvdoEci.setTitle("Signal :");
+        infoSignalEvdoEci.setContent(mRecord.getSignalRecord().getEvdoEci() + "");
+
+        ListInfo infoLocalisationSep = new ListInfo();
+        infoLocalisationSep.setTitle("User localisation :");
+
+        ListInfo infoLatitude = new ListInfo();
+        infoLatitude.setTitle("Latitude :");
+        infoLatitude.setContent(mRecord.getLatitude() + "");
+
+        ListInfo infoLongitude= new ListInfo();
+        infoLongitude.setTitle("Longitude :");
+        infoLongitude.setContent(mRecord.getLongitude() + "");
+
+        listInfos.add(infoDate);
+        listInfos.add(infoAndroidVersion);
+        listInfos.add(infoAndroidApi);
+        listInfos.add(infoDevice);
+        listInfos.add(infoProduct);
+        listInfos.add(infoCode1);
+        listInfos.add(infoCode2);
+        listInfos.add(new ListInfo());
+        listInfos.add(infoBatteryPercent);
+        listInfos.add(infoBatteryCapacity);
+        listInfos.add(new ListInfo());
+        listInfos.add(infoStatusSignal);
+        listInfos.add(infoSignalNoise);
+        listInfos.add(infoSignalDb);
+        listInfos.add(infoSignalEvdoEci);
+        listInfos.add(new ListInfo());
+        listInfos.add(infoLocalisationSep);
+        listInfos.add(infoLatitude);
+        listInfos.add(infoLongitude);
+        return listInfos;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_record);
 
+        String id = getIntent().getStringExtra("record");
+        RealmQuery<Record> query = Realm.getDefaultInstance().where(Record.class);
+        mRecord = query.contains("mId", id).findFirst();
+
         MapboxAccountManager.start(this, "pk.eyJ1IjoicmVtaXJvYmVydDMzNTMwIiwiYSI6ImNpcjF4eDc1dTAwOGpodW5uYmp1b2VqZ2sifQ.uqX-g4VqZxPTsOK0qx77KQ");
 
         mMapView = (MapView) findViewById(R.id.mapView);
-        mListView = (ListView) findViewById(R.id.list);
+        mListView = (RecyclerView) findViewById(R.id.list);
+        mListView.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        mListView.setLayoutManager(llm);
 
-        String[] values = new String[]{"Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View"
-        };
-
-        // Define a new Adapter
-        // First parameter - Context
-        // Second parameter - Layout for the row
-        // Third parameter - ID of the TextView to which the data is written
-        // Forth - the Array of data
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.select_dialog_item, android.R.id.text1, values);
-
-
-        // Assign adapter to ListView
+        DetailRecordAdaptater adapter = new DetailRecordAdaptater(getDataAdaptator());
         mListView.setAdapter(adapter);
 
         mMapView.setAccessToken("pk.eyJ1IjoicmVtaXJvYmVydDMzNTMwIiwiYSI6ImNpcjF4eDc1dTAwOGpodW5uYmp1b2VqZ2sifQ.uqX-g4VqZxPTsOK0qx77KQ");
         mMapView.onCreate(savedInstanceState);
-
-        String id = getIntent().getStringExtra("record");
-        RealmQuery<Record> query = Realm.getDefaultInstance().where(Record.class);
-        mRecord = query.contains("mId", id).findFirst();
 
         Log.v(TAG, "Record position : " + mRecord.getLatitude() + " : " + mRecord.getLongitude());
 

@@ -48,6 +48,7 @@ public class RecordManager {
                 record.setBattery(battery);
                 record.setDevice(DeviceManager.information(mContext));
                 record.setSignalRecord(signalRecord);
+
                 Realm realm = Realm.getDefaultInstance();
                 realm.beginTransaction();
                 realm.copyToRealmOrUpdate(record);

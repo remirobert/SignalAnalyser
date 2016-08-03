@@ -19,13 +19,11 @@
            mapbox:style_url="mapbox://styles/mapbox/streets-v9"
            mapbox:zoom="11"/>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
-        android:layout_below="@+id/mapView"
+        android:layout_below="@id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-    </ListView>
+    </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>
