@@ -118,6 +118,63 @@ public class DetailRecordActivity extends AppCompatActivity {
         listInfos.add(infoLocalisationSep);
         listInfos.add(infoLatitude);
         listInfos.add(infoLongitude);
+        listInfos.add(new ListInfo());
+
+        ListInfo infoTitleTower = new ListInfo();
+        infoTitleTower.setTitle("Cell tower list :");
+        listInfos.add(infoTitleTower);
+
+        for (CellularTower tower : mRecord.getCellularTowers()) {
+            listInfos.add(new ListInfo());
+            ListInfo sepTower = new ListInfo();
+            sepTower.setTitle("----------------------");
+            listInfos.add(sepTower);
+
+            ListInfo lac = new ListInfo();
+            lac.setTitle("LAC :");
+            lac.setContent(tower.getLac() + "");
+            listInfos.add(lac);
+
+            ListInfo cid = new ListInfo();
+            cid.setTitle("CID :");
+            cid.setContent(tower.getCid() + "");
+            listInfos.add(cid);
+
+            ListInfo mcc = new ListInfo();
+            mcc.setTitle("MCC :");
+            mcc.setContent(tower.getMcc() + "");
+            listInfos.add(mcc);
+
+            ListInfo mnc = new ListInfo();
+            mnc.setTitle("MNC :");
+            mnc.setContent(tower.getMnc() + "");
+            listInfos.add(mnc);
+
+            ListInfo lat = new ListInfo();
+            lat.setTitle("Latitude :");
+            lat.setContent(tower.getLat() + "");
+            listInfos.add(lat);
+
+            ListInfo lon = new ListInfo();
+            lon.setTitle("Longitude :");
+            lon.setContent(tower.getLon() + "");
+            listInfos.add(lon);
+
+            ListInfo asuLevel = new ListInfo();
+            asuLevel.setTitle("ASU level :");
+            asuLevel.setContent(tower.getAsuLevel() + "");
+            listInfos.add(asuLevel);
+
+            ListInfo signalLevel = new ListInfo();
+            signalLevel.setTitle("Signal level :");
+            signalLevel.setContent(tower.getSignalLevel() + "");
+            listInfos.add(signalLevel);
+
+            ListInfo signalDbm = new ListInfo();
+            signalDbm.setTitle("Signal DBM :");
+            signalDbm.setContent(tower.getSignalDbm() + "");
+            listInfos.add(signalDbm);
+        }
         return listInfos;
     }
 
