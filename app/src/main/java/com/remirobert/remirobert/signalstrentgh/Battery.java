@@ -33,4 +33,13 @@ public class Battery extends RealmObject {
     public void setCapacity(double capacity) {
         this.capacity = capacity;
     }
+
+    @Override
+    public String toString() {
+        return "Battery{" +
+                "mId='" + mId + '\'' +
+                ", level=" + level +
+                ", capacity=" + capacity +
+                '}';
+    }
 }

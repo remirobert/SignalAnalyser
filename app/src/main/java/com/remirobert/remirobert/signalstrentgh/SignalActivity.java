@@ -1,16 +1,26 @@
 package com.remirobert.remirobert.signalstrentgh;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -21,8 +31,12 @@ public class SignalActivity extends AppCompatActivity {
     private static final String TAG = "SignalActivity";
     private static final int REQUEST_LOCATION = 1;
 
+    private long mInterval = 5000;
+    private Handler mHandler;
+    private boolean record = false;
+
     private RecordManager mRecordManager;
-    private FloatingActionButton mFloatingActionButton;
+    //private FloatingActionButton mFloatingActionButton;
 
     private void initListRecords() {
         Log.v(TAG, "init list records");
@@ -37,6 +51,21 @@ public class SignalActivity extends AppCompatActivity {
         RecordAdapter recordAdapter = new RecordAdapter(results);
         rv.setAdapter(recordAdapter);
     }
+
+    //==================
+    public void exportRealmData(final RealmResults<Record> results) {
+        // Realm realm = Realm.getDefaultInstance();
+        //RealmResults<Record> results = realm.where(Record.class).findAll();
+        Gson gson = new Gson();
+        //for (Record r : results) {
+        Record r = results.get(0);
+        String json = gson.toJson(r);
+        Log.e("大大的", json);
+        //}
+//        String json = gson.toJson(results);
+//        Log.e("大大的", json);
+    }
+    //==================
 
     private void requestRecord() {
         mRecordManager.fetchRecord().subscribe(new Action1<Record>() {
@@ -78,20 +107,92 @@ public class SignalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signal);
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);*/
 
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.button_new_record);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        if (fab != null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (record) {
+                        stopRepeatingTask();
+                        record = false;
+                    } else {
+                        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        long tInterval = Long.parseLong(sharedPref.getString("time_interval", "5"));
+                        Log.e("聊啥呢", tInterval + ">>>>>>>>>>>>>>>>>>>>>>");
+                        mInterval = tInterval * 1000;
+                        startRepeatingTask();
+                        record = true;
+                    }
+                }
+            });
+        }
 
         initListRecords();
         mRecordManager = new RecordManager(getApplicationContext());
 
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkPermissionUser();
-//                getTowerRecords();
-            }
-        });
+        mHandler = new Handler();
 
-        findViewById(R.id.loading_panel).setVisibility(View.GONE);
+    }
+
+    private Runnable mDataCollection = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                checkPermissionUser();
+            } finally {
+                mHandler.postDelayed(mDataCollection, mInterval);
+            }
+        }
+    };
+
+    private void startRepeatingTask() {
+        mDataCollection.run();
+    }
+
+    private void stopRepeatingTask() {
+        mHandler.removeCallbacks(mDataCollection);
+    }
+
+    public void startRecord(View view) {
+        long tInterval = PreferenceUtils.getPrefLong(this, "time_interval", 5);
+        Log.e("聊啥呢", tInterval + ">>>>>>>>>>>>>>>>>>>>>>");
+        mInterval = tInterval * 1000;
+        startRepeatingTask();
+    }
+
+    public void stopRecord(View view) {
+        stopRepeatingTask();
+    }
+
+    public void exportJson(View view) {
+
+        /*Gson gson = new GsonBuilder().registerTypeAdapter(Record.class, new RecordSerializer()).setPrettyPrinting().create();
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Record> results = realm.where(Record.class).findAll();
+        for (Record r : results) {
+            String json = gson.toJson(r);
+            Log.e("廖山河", json);
+        }*/
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_signal, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_setting) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

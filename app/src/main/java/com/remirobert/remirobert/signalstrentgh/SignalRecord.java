@@ -70,4 +70,16 @@ public class SignalRecord extends RealmObject {
     public void setLevel(double level) {
         this.level = level;
     }
+
+    @Override
+    public String toString() {
+        return "SignalRecord{" +
+                "statutSignal=" + statutSignal +
+                ", noise=" + noise +
+                ", evdoEci=" + evdoEci +
+                ", db=" + db +
+                ", level=" + level +
+                ", isGsm=" + isGsm +
+                '}';
+    }
 }

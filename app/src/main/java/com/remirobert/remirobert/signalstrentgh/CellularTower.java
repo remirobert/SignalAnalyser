@@ -101,4 +101,20 @@ public class CellularTower extends RealmObject implements Serializable {
     public void setSignalDbm(double signalDbm) {
         this.signalDbm = signalDbm;
     }
+
+    @Override
+    public String toString() {
+        return "CellularTower{" +
+                "id='" + id + '\'' +
+                ", mcc=" + mcc +
+                ", mnc=" + mnc +
+                ", lac=" + lac +
+                ", cid=" + cid +
+                ", lat=" + lat +
+                ", lon=" + lon +
+                ", asuLevel=" + asuLevel +
+                ", signalLevel=" + signalLevel +
+                ", signalDbm=" + signalDbm +
+                '}';
+    }
 }

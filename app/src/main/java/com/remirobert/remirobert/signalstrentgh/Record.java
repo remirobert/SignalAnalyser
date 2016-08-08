@@ -81,4 +81,18 @@ public class Record extends RealmObject {
     public String getId() {
         return mId;
     }
+
+    @Override
+    public String toString() {
+        return "Record{" +
+                "mId='" + mId + '\'' +
+                ", mSignalRecord=" + mSignalRecord +
+                ", mBattery=" + mBattery +
+                ", mDevice=" + mDevice +
+                ", mCellularTowers=" + mCellularTowers +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", mDate=" + mDate +
+                '}';
+    }
 }

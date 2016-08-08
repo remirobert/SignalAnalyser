@@ -92,6 +92,8 @@ public class CellTowerManager {
                 cellularTower.setSignalLevel(cellInfoGsm.getCellSignalStrength().getLevel());
                 cellularTower.setSignalDbm(cellInfoGsm.getCellSignalStrength().getDbm());
             }
+        } else {
+            Log.e(TAG, "unknown cellinfo................................................");
         }
         return checkInvalidData(cellularTower);
     }
@@ -132,7 +134,7 @@ public class CellTowerManager {
                     public void onResponse(Call<CellIdResponse> call, Response<CellIdResponse> response) {
                         Log.v(TAG, "request : " + call.request().toString());
                         Log.v(TAG, "response request : " + response.body());
-                        Log.e(TAG, "response request : " + response.errorBody());
+                        Log.e(TAG, "response errorBody : " + response.errorBody());
 
                         CellIdResponse cellIdResponse = response.body();
 

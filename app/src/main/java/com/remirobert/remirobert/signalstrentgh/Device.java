@@ -78,4 +78,18 @@ public class Device extends RealmObject {
     public void setIMSI(String IMSI) {
         mIMSI = IMSI;
     }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "mId='" + mId + '\'' +
+                ", mOsVersion='" + mOsVersion + '\'' +
+                ", mApiLevel='" + mApiLevel + '\'' +
+                ", mModel='" + mModel + '\'' +
+                ", mDevice='" + mDevice + '\'' +
+                ", mProduct='" + mProduct + '\'' +
+                ", mIMEI='" + mIMEI + '\'' +
+                ", mIMSI='" + mIMSI + '\'' +
+                '}';
+    }
 }
