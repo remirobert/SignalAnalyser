@@ -149,8 +149,11 @@ public class CellTowerManager {
 
                     @Override
                     public void onFailure(Call<CellIdResponse> call, Throwable t) {
+                        Log.e(TAG, call.request().toString());
                         Log.e(TAG, t.toString());
-                        subscriber.onError(t);
+//                        subscriber.onError(t);
+                        subscriber.onNext(cellularTower);
+                        subscriber.onCompleted();
                     }
                 });
             }
