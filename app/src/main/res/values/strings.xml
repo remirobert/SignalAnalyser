@@ -3,6 +3,9 @@
 
     <string name="title_activity_settings">Settings</string>
 
+    <string name="export_data_dir_name">SignalStrengthExportData</string>
+    <string name="export_data_file_name_prefix">records</string>
+
     <!-- Strings related to Settings -->
     <string name="action_setting">Settings</string>
     <string name="pref_default_time_interval_seconds">30</string>
@@ -14,4 +17,5 @@
     <string name="pref_header_data_sync">Data &amp; sync</string>
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
+    <string name="action_export">Export data as JSON</string>
 </resources>

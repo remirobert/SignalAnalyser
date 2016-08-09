@@ -93,7 +93,7 @@ public class CellTowerManager {
                 cellularTower.setSignalDbm(cellInfoGsm.getCellSignalStrength().getDbm());
             }
         } else {
-            Log.e(TAG, "unknown cellinfo................................................");
+            Log.e(TAG, "CDMA CellInfo................................................");
         }
         return checkInvalidData(cellularTower);
     }

@@ -2,11 +2,10 @@ package com.remirobert.remirobert.signalstrentgh;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +17,22 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
+import rx.Subscriber;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class SignalActivity extends AppCompatActivity {
 
@@ -146,8 +158,84 @@ public class SignalActivity extends AppCompatActivity {
         if (id == R.id.action_setting) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+        } else if (id == R.id.action_export) {
+            exportData();
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void saveJson(String json) {
+        if (isExternalStorageWritable()) {
+            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getString(R.string.export_data_dir_name));
+            if (!dir.mkdirs()) {
+                Log.e(TAG, "Directory not created");
+            }
+            try {
+                Date date = new Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                String filename = getString(R.string.export_data_file_name_prefix) + "_" + sdf.format(date) + ".json";
+                File file = new File(dir, filename);
+                if (!file.exists()) {
+                    if (!file.createNewFile()) {
+                        Log.e(TAG, "File not created");
+                    }
+                }
+                FileWriter fileWriter = new FileWriter(file.getAbsolutePath(), false);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                bufferedWriter.write(json);
+                bufferedWriter.close();
+                fileWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, "Saving data error");
+            }
+        } else {
+            Toast.makeText(this, "ExternalStorage unavailable", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void exportData() {
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Record> results = realm.where(Record.class).findAll();
+
+        rx.Observable.create(new rx.Observable.OnSubscribe<List<JRecord>>() {
+            @Override
+            public void call(Subscriber<? super List<JRecord>> subscriber) {
+                List<JRecord> jRecords = new ArrayList<>();
+                for (Record r : results) {
+                    JRecord myRecord = new JRecord(r);
+                    jRecords.add(myRecord);
+                }
+                subscriber.onNext(jRecords);
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.immediate())
+                .observeOn(Schedulers.io())
+                .subscribe(new Subscriber<List<JRecord>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.v(TAG, "export data successfully.");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "export data failed.");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<JRecord> jRecords) {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(jRecords);
+                        saveJson(json);
+                    }
+                });
+    }
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
 }
