@@ -7,27 +7,27 @@ import java.util.List;
  * Created by LiaoShanhe on 2016/08/09.
  */
 public class JRecord {
-    private String mId;
-    private JSignalRecord mSignalRecord;
-    private JBattery mBattery;
-    private JDevice mDevice;
-    private List<JCellularTower> mCellularTowers;
+    private String id;
+    private JSignalRecord signalRecord;
+    private JBattery battery;
+    private JDevice device;
+    private List<JCellularTower> cellularTowers;
     private double latitude;
     private double longitude;
-    private long mDate;
+    private long date;
 
     public JRecord(Record r) {
-        mId = r.getId();
-        mSignalRecord = new JSignalRecord(r.getSignalRecord());
-        mBattery = new JBattery(r.getBattery());
-        mDevice = new JDevice(r.getDevice());
-        mCellularTowers = new ArrayList<>();
+        id  = r.getId();
+        signalRecord = new JSignalRecord(r.getSignalRecord());
+        battery = new JBattery(r.getBattery());
+        device = new JDevice(r.getDevice());
+        cellularTowers = new ArrayList<>();
         for (CellularTower c : r.getCellularTowers()) {
-            mCellularTowers.add(new JCellularTower(c));
+            cellularTowers.add(new JCellularTower(c));
         }
         latitude = r.getLatitude();
         longitude = r.getLongitude();
-        mDate = r.getDate().getTime();
+        date = r.getDate().getTime();
     }
 
     public double getLatitude() {
@@ -46,53 +46,54 @@ public class JRecord {
         this.longitude = longitude;
     }
 
-    public JBattery getmBattery() {
-        return mBattery;
+    public JSignalRecord getSignalRecord() {
+        return signalRecord;
     }
 
-    public void setmBattery(JBattery mBattery) {
-        this.mBattery = mBattery;
+    public void setSignalRecord(JSignalRecord signalRecord) {
+        this.signalRecord = signalRecord;
     }
 
-    public List<JCellularTower> getmCellularTowers() {
-        return mCellularTowers;
+    public JBattery getBattery() {
+        return battery;
     }
 
-    public void setmCellularTowers(List<JCellularTower> mCellularTowers) {
-        this.mCellularTowers = mCellularTowers;
+    public void setBattery(JBattery battery) {
+        this.battery = battery;
     }
 
-    public long getmDate() {
-        return mDate;
+    public JDevice getDevice() {
+        return device;
     }
 
-    public void setmDate(long mDate) {
-        this.mDate = mDate;
+    public void setDevice(JDevice device) {
+        this.device = device;
     }
 
-    public JDevice getmDevice() {
-        return mDevice;
+    public List<JCellularTower> getCellularTowers() {
+        return cellularTowers;
     }
 
-    public void setmDevice(JDevice mDevice) {
-        this.mDevice = mDevice;
+    public void setCellularTowers(List<JCellularTower> cellularTowers) {
+        this.cellularTowers = cellularTowers;
     }
 
-    public String getmId() {
-        return mId;
+    public long getDate() {
+        return date;
     }
 
-    public void setmId(String mId) {
-        this.mId = mId;
+    public void setDate(long date) {
+        this.date = date;
     }
 
-    public JSignalRecord getmSignalRecord() {
-        return mSignalRecord;
+    public String getId() {
+        return id;
     }
 
-    public void setmSignalRecord(JSignalRecord mSignalRecord) {
-        this.mSignalRecord = mSignalRecord;
+    public void setId(String id) {
+        this.id = id;
     }
+
 
     private class JSignalRecord {
         int statutSignal;
@@ -187,22 +188,22 @@ public class JRecord {
     }
 
     private class JDevice {
-        String mOsVersion;
-        String mApiLevel;
-        String mModel;
-        String mDevice;
-        String mProduct;
-        String mIMEI;
-        String mIMSI;
+        String osVersion;
+        String apiLevel;
+        String model;
+        String device;
+        String product;
+        String IMEI;
+        String IMSI;
 
         public JDevice(Device d) {
-            mOsVersion = d.getOsVersion();
-            mApiLevel = d.getApiLevel();
-            mModel = d.getModel();
-            mDevice = d.getDevice();
-            mProduct = d.getProduct();
-            mIMEI = d.getIMEI();
-            mIMSI = d.getIMSI();
+            osVersion = d.getOsVersion();
+            apiLevel = d.getApiLevel();
+            model = d.getModel();
+            device = d.getDevice();
+            product = d.getProduct();
+            IMEI = d.getIMEI();
+            IMSI = d.getIMSI();
         }
     }
 

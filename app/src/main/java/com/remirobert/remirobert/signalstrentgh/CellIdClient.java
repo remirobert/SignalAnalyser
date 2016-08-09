@@ -11,7 +11,7 @@ public interface CellIdClient {
 
     //http://opencellid.org/cell/get?key=e5dad4a2-e436-412c-8178-064b8fef2ecc&mcc=208&mnc=15&lac=3300&cellid=104187198&format=json
 
-    @GET("/cell/get")
+    @GET("http://opencellid.org/cell/get")
     Call<CellIdResponse> cellInformations(
             @Query("key") String key,
             @Query("mcc") int mcc,

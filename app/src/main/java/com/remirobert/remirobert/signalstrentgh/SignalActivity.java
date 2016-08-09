@@ -30,6 +30,9 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import rx.Subscriber;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -72,6 +75,19 @@ public class SignalActivity extends AppCompatActivity {
         mRecordManager.fetchRecord().subscribe(new Action1<Record>() {
             @Override
             public void call(Record record) {
+                JRecord jRecord = new JRecord(record);
+                final RecordClient recordClient = ServiceGenerator.createService(RecordClient.class);
+                recordClient.postNewRecord(jRecord).enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        Log.v(TAG, "request success");
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Log.e(TAG, t.getMessage());
+                    }
+                });
                 Log.v(TAG, "got record");
                 initListRecords();
             }
@@ -237,5 +253,4 @@ public class SignalActivity extends AppCompatActivity {
         String state = Environment.getExternalStorageState();
         return Environment.MEDIA_MOUNTED.equals(state);
     }
-
 }

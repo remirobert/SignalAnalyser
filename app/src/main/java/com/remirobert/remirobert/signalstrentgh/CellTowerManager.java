@@ -121,7 +121,8 @@ public class CellTowerManager {
         return rx.Observable.create(new Observable.OnSubscribe<CellularTower>() {
             @Override
             public void call(final Subscriber<? super CellularTower> subscriber) {
-                final CellIdClient cellIdClient = CellIdService.createService(CellIdClient.class);
+                ServiceGenerator.changeApiBaseUrl("http://opencellid.org");
+                final CellIdClient cellIdClient = ServiceGenerator.createService(CellIdClient.class);
                 Call<CellIdResponse> cellIdResponseCall = cellIdClient.cellInformations("e5dad4a2-e436-412c-8178-064b8fef2ecc",
                         cellularTower.getMcc(),
                         cellularTower.getMnc(),
