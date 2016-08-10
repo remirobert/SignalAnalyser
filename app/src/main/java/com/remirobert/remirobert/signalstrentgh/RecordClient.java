@@ -8,6 +8,6 @@ import retrofit2.http.POST;
  * Created by remirobert on 09/08/16.
  */
 public interface RecordClient {
-    @POST("http://remirobert.com:8080/record")
+    @POST("http://remirobert.com:3017/record")
     Call<Void> postNewRecord(@Body JRecord record);
 }
