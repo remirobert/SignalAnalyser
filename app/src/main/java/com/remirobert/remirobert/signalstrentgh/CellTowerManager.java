@@ -8,7 +8,9 @@ import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
+import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -57,6 +59,7 @@ public class CellTowerManager {
             CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) cellInfo;
             CellIdentityWcdma cellIdentityWcdma = cellInfoWcdma.getCellIdentity();
             cellularTower = new CellularTower();
+            cellularTower.setType("WCDMA");
             cellularTower.setCid(cellIdentityWcdma.getCid());
             cellularTower.setLac(cellIdentityWcdma.getLac());
             cellularTower.setMcc(cellIdentityWcdma.getMcc());
@@ -70,6 +73,7 @@ public class CellTowerManager {
             CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;
             CellIdentityLte cellIdentityLte = cellInfoLte.getCellIdentity();
             cellularTower = new CellularTower();
+            cellularTower.setType("LTE");
             cellularTower.setCid(cellIdentityLte.getCi());
             cellularTower.setMnc(cellIdentityLte.getMnc());
             cellularTower.setMcc(cellIdentityLte.getMcc());
@@ -83,6 +87,7 @@ public class CellTowerManager {
             CellInfoGsm cellInfoGsm = (CellInfoGsm) cellInfo;
             CellIdentityGsm cellIdentityGsm = cellInfoGsm.getCellIdentity();
             cellularTower = new CellularTower();
+            cellularTower.setType("GSM");
             cellularTower.setCid(cellIdentityGsm.getCid());
             cellularTower.setLac(cellIdentityGsm.getLac());
             cellularTower.setMcc(cellIdentityGsm.getMcc());
@@ -96,6 +101,19 @@ public class CellTowerManager {
             Log.e(TAG, "CDMA CellInfo................................................");
         }
         return checkInvalidData(cellularTower);
+    }
+
+    public CellularTower getConnectedTower() {
+        CellLocation cellLocation = mTelephonyManager.getCellLocation();
+        CellularTower tower = new CellularTower();
+
+        if (cellLocation instanceof GsmCellLocation) {
+            tower.setPsc(((GsmCellLocation) cellLocation).getPsc());
+            tower.setCid(((GsmCellLocation) cellLocation).getCid());
+            tower.setLac(((GsmCellLocation) cellLocation).getLac());
+            tower.setType("GSM");
+        }
+        return tower;
     }
 
     public List<CellularTower> getTowerList() {

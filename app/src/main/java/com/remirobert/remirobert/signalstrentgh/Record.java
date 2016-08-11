@@ -16,6 +16,7 @@ public class Record extends RealmObject {
     private SignalRecord mSignalRecord;
     private Battery mBattery;
     private Device mDevice;
+    private CellularTower mConnectedTower;
     private RealmList<CellularTower> mCellularTowers;
     private double latitude;
     private double longitude;
@@ -60,6 +61,14 @@ public class Record extends RealmObject {
 
     public void setCellularTowers(RealmList<CellularTower> cellularTowers) {
         mCellularTowers = cellularTowers;
+    }
+
+    public CellularTower getConnectedTower() {
+        return mConnectedTower;
+    }
+
+    public void setConnectedTower(CellularTower connectedTower) {
+        mConnectedTower = connectedTower;
     }
 
     public double getLatitude() {

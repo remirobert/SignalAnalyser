@@ -12,10 +12,12 @@ import io.realm.annotations.PrimaryKey;
 public class CellularTower extends RealmObject implements Serializable {
     @PrimaryKey
     private String id;
+    private String type;
     private int mcc;
     private int mnc;
     private int lac;
     private int cid;
+    private int psc;
     private double lat;
     private double lon;
     private int asuLevel;
@@ -24,6 +26,14 @@ public class CellularTower extends RealmObject implements Serializable {
 
     public CellularTower() {
         this.id = UUID.randomUUID().toString();
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getId() {
@@ -60,6 +70,14 @@ public class CellularTower extends RealmObject implements Serializable {
 
     public void setCid(int cid) {
         this.cid = cid;
+    }
+
+    public int getPsc() {
+        return psc;
+    }
+
+    public void setPsc(int psc) {
+        psc = psc;
     }
 
     public double getLat() {
@@ -106,10 +124,12 @@ public class CellularTower extends RealmObject implements Serializable {
     public String toString() {
         return "CellularTower{" +
                 "id='" + id + '\'' +
+                ", type=" + type +
                 ", mcc=" + mcc +
                 ", mnc=" + mnc +
                 ", lac=" + lac +
                 ", cid=" + cid +
+                ", cid=" + psc +
                 ", lat=" + lat +
                 ", lon=" + lon +
                 ", asuLevel=" + asuLevel +

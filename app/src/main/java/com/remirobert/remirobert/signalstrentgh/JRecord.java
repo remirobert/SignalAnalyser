@@ -11,6 +11,7 @@ public class JRecord {
     private JSignalRecord signalRecord;
     private JBattery battery;
     private JDevice device;
+    private JCellularTower connectedTower;
     private List<JCellularTower> cellularTowers;
     private double latitude;
     private double longitude;
@@ -25,6 +26,7 @@ public class JRecord {
         for (CellularTower c : r.getCellularTowers()) {
             cellularTowers.add(new JCellularTower(c));
         }
+        connectedTower = new JCellularTower(r.getConnectedTower());
         latitude = r.getLatitude();
         longitude = r.getLongitude();
         date = r.getDate().getTime();
@@ -76,6 +78,14 @@ public class JRecord {
 
     public void setCellularTowers(List<JCellularTower> cellularTowers) {
         this.cellularTowers = cellularTowers;
+    }
+
+    public JCellularTower getConnectedTower() {
+        return connectedTower;
+    }
+
+    public void setConnectedTower(JCellularTower connectedTower) {
+        this.connectedTower = connectedTower;
     }
 
     public long getDate() {
