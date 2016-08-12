@@ -3,7 +3,6 @@ package com.remirobert.remirobert.signalstrentgh;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
@@ -13,7 +12,7 @@ import io.realm.RealmConfiguration;
  */
 public class SignalStrenght extends Application {
 
-    private long mTimeInterval;
+    private long mTimeInterval; // in milliseconds
 
     public long getmTimeInterval() {
         return mTimeInterval;

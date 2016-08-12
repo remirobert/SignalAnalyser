@@ -18,7 +18,7 @@ public class JRecord {
     private long date;
 
     public JRecord(Record r) {
-        id  = r.getId();
+        id = r.getId();
         signalRecord = new JSignalRecord(r.getSignalRecord());
         battery = new JBattery(r.getBattery());
         device = new JDevice(r.getDevice());
@@ -224,6 +224,7 @@ public class JRecord {
         int cid;
         double lat;
         double lon;
+        String type;
         int asuLevel;
         int signalLevel;
         double signalDbm;
@@ -235,9 +236,18 @@ public class JRecord {
             cid = c.getCid();
             lat = c.getLat();
             lon = c.getLon();
+            type = c.getType();
             asuLevel = c.getAsuLevel();
             signalLevel = c.getSignalLevel();
             signalDbm = c.getSignalDbm();
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
         }
 
         public int getAsuLevel() {

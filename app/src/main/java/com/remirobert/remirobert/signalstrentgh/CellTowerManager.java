@@ -104,8 +104,22 @@ public class CellTowerManager {
     }
 
     public CellularTower getConnectedTower() {
+        String operator = mTelephonyManager.getNetworkOperator();
+        int mcc, mnc;
+        try {
+            mcc = Integer.parseInt(operator.substring(0, 3));
+        } catch (Exception e) {
+            mcc = 0;
+        }
+        try {
+            mnc = Integer.parseInt(operator.substring(3));
+        } catch (Exception e) {
+            mnc = 0;
+        }
         CellLocation cellLocation = mTelephonyManager.getCellLocation();
         CellularTower tower = new CellularTower();
+        tower.setMcc(mcc);
+        tower.setMnc(mnc);
 
         if (cellLocation instanceof GsmCellLocation) {
             tower.setPsc(((GsmCellLocation) cellLocation).getPsc());
@@ -122,6 +136,11 @@ public class CellTowerManager {
 
         cellInfoList = mTelephonyManager.getAllCellInfo();
         if (cellInfoList == null || cellInfoList.size() == 0) {
+            if (cellInfoList == null) {
+                Log.v(TAG, "getAllCellInfo() returns null");
+            } else {
+                Log.v(TAG, "getAllCellInfo() list size 0");
+            }
             return cellularTowerList;
         }
 
