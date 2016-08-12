@@ -230,6 +230,9 @@ public class JRecord {
         double signalDbm;
 
         public JCellularTower(CellularTower c) {
+            if (c == null) {
+                return;
+            }
             mcc = c.getMcc();
             mnc = c.getMnc();
             lac = c.getLac();

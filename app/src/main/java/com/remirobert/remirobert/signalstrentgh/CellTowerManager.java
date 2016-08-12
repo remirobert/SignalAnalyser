@@ -126,6 +126,8 @@ public class CellTowerManager {
             tower.setCid(((GsmCellLocation) cellLocation).getCid());
             tower.setLac(((GsmCellLocation) cellLocation).getLac());
             tower.setType("GSM");
+            Log.v(TAG, "Get connected tower GSM");
+            Log.v(TAG, ((GsmCellLocation) cellLocation).toString());
         }
         return tower;
     }
