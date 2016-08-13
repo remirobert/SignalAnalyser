@@ -65,9 +65,9 @@ public class CellTowerManager {
             cellularTower.setMcc(cellIdentityWcdma.getMcc());
             cellularTower.setMnc(cellIdentityWcdma.getMnc());
             if (cellInfoWcdma.getCellSignalStrength() != null) {
-                cellularTower.setAsuLevel(cellInfoWcdma.getCellSignalStrength().getAsuLevel());
-                cellularTower.setSignalLevel(cellInfoWcdma.getCellSignalStrength().getLevel());
-                cellularTower.setSignalDbm(cellInfoWcdma.getCellSignalStrength().getDbm());
+                cellularTower.setAsuLevel(cellInfoWcdma.getCellSignalStrength().getAsuLevel()); //Get the signal level as an asu value between 0..31, 99 is unknown Asu is calculated based on 3GPP RSRP.
+                cellularTower.setSignalLevel(cellInfoWcdma.getCellSignalStrength().getLevel()); //Get signal level as an int from 0..4
+                cellularTower.setSignalDbm(cellInfoWcdma.getCellSignalStrength().getDbm()); //Get the signal strength as dBm
             }
         } else if (cellInfo instanceof CellInfoLte) {
             CellInfoLte cellInfoLte = (CellInfoLte) cellInfo;

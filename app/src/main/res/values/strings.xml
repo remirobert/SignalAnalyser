@@ -18,4 +18,6 @@
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
     <string name="action_export">Export data as JSON</string>
+    <string name="action_delete_data">Delete data</string>
+    <string name="action_delete_selected_record">Delete selected record</string>
 </resources>

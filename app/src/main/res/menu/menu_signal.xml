@@ -16,4 +16,10 @@
         android:title="@string/action_export"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_delete_data"
+        android:orderInCategory="300"
+        android:title="@string/action_delete_data"
+        app:showAsAction="never" />
+
 </menu>

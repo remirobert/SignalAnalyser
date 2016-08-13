@@ -43,9 +43,9 @@ public class SignalObserver extends PhoneStateListener {
         SignalRecord signalRecord = new SignalRecord();
         signalRecord.setDb(dB);
         signalRecord.setGsm(signalStrength.isGsm());
-        signalRecord.setNoise(signalStrength.getEvdoSnr());
-        signalRecord.setEvdoEci(signalStrength.getEvdoEcio());
-        signalRecord.setLevel(signalStrength.getLevel());
+        signalRecord.setNoise(signalStrength.getEvdoSnr()); //Get the signal to noise ratio.
+        signalRecord.setEvdoEci(signalStrength.getEvdoEcio());  //Get the EVDO Ec/Io value in dB*10
+        signalRecord.setLevel(signalStrength.getLevel());   //Retrieve an abstract level value for the overall signal strength.
         signalRecord.setStatutSignal((dB == -120) ? SignalRecord.SIGNAL_STATUT_NONE : SignalRecord.SIGNAL_STATUT_OK);
 
         mSubscriber.onNext(signalRecord);

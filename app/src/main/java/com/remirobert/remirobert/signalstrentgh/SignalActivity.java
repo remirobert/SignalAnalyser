@@ -1,6 +1,7 @@
 package com.remirobert.remirobert.signalstrentgh;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -57,7 +59,7 @@ public class SignalActivity extends AppCompatActivity {
         }
     };
 
-    private void initListRecords() {
+    public void initListRecords() {
         Log.v(TAG, "init list records");
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
@@ -67,7 +69,7 @@ public class SignalActivity extends AppCompatActivity {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Record> results = realm.where(Record.class).findAll();
 
-        RecordAdapter recordAdapter = new RecordAdapter(results);
+        RecordAdapter recordAdapter = new RecordAdapter(results, this);
         rv.setAdapter(recordAdapter);
     }
 
@@ -176,9 +178,39 @@ public class SignalActivity extends AppCompatActivity {
             startActivity(intent);
         } else if (id == R.id.action_export) {
             exportData();
+        } else if (id == R.id.action_delete_data) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are your sure to delete all data?");
+            builder.setTitle("warning");
+            builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    deleteData();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.create().show();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteData() {
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Record> results = realm.where(Record.class).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                results.deleteAllFromRealm();
+            }
+        });
+        initListRecords();
     }
 
     public void saveJson(String json) {
@@ -211,6 +243,24 @@ public class SignalActivity extends AppCompatActivity {
         }
     }
 
+    public void makeExportToast(boolean success) {
+        if (success) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "export data successfully", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "export data failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
     public void exportData() {
         Realm realm = Realm.getDefaultInstance();
         final RealmResults<Record> results = realm.where(Record.class).findAll();
@@ -232,11 +282,13 @@ public class SignalActivity extends AppCompatActivity {
                     @Override
                     public void onCompleted() {
                         Log.v(TAG, "export data successfully.");
+                        makeExportToast(true);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "export data failed.");
+                        makeExportToast(false);
                         e.printStackTrace();
                     }
 
