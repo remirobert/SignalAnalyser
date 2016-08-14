@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -144,13 +145,17 @@ public class SignalActivity extends AppCompatActivity {
                     if (record) {
                         stopRecording();
                         record = false;
-                        setTitle("SignalStrength" + "(stop)");
+                        setTitle("SignalStrength" + "(stopped)");
+                        TextView textView = (TextView) findViewById(R.id.fab_text);
+                        textView.setText("Start");
                     } else {
                         //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                         //long tInterval = Long.parseLong(sharedPref.getString(getString(R.string.pref_general_time_interval), "5"));
                         startRecording();
                         record = true;
                         setTitle("SignalStrength" + "(recording...)");
+                        TextView textView = (TextView) findViewById(R.id.fab_text);
+                        textView.setText("Stop");
                     }
                 }
             });
