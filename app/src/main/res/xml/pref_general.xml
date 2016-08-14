@@ -7,7 +7,6 @@
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:title="Record time interval"
-        />
+        android:title="Record time interval" />
 
 </PreferenceScreen>

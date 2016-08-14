@@ -37,6 +37,11 @@ public class CellTowerManager {
     private TelephonyManager mTelephonyManager;
     private Context mContext;
 
+    public CellTowerManager(Context context) {
+        mContext = context;
+        mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+    }
+
     private CellularTower checkInvalidData(CellularTower cellularTower) {
         if (cellularTower == null) {
             return null;
@@ -255,10 +260,5 @@ public class CellTowerManager {
                 });
             }
         });
-    }
-
-    public CellTowerManager(Context context) {
-        mContext = context;
-        mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
     }
 }

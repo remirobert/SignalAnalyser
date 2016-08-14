@@ -13,15 +13,6 @@ import io.realm.RealmConfiguration;
 public class SignalStrenght extends Application {
 
     private long mTimeInterval; // in milliseconds
-
-    public long getmTimeInterval() {
-        return mTimeInterval;
-    }
-
-    public void setmTimeInterval(long mTimeInterval) {
-        this.mTimeInterval = mTimeInterval;
-    }
-
     public SharedPreferences.OnSharedPreferenceChangeListener
             onSharedPreferenceChangeListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
@@ -36,6 +27,14 @@ public class SignalStrenght extends Application {
             }
         }
     };
+
+    public long getmTimeInterval() {
+        return mTimeInterval;
+    }
+
+    public void setmTimeInterval(long mTimeInterval) {
+        this.mTimeInterval = mTimeInterval;
+    }
 
     @Override
     public void onCreate() {

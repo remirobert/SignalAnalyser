@@ -1,6 +1,8 @@
 package com.remirobert.remirobert.signalstrentgh;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +19,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -27,7 +31,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import io.realm.Realm;
@@ -35,6 +41,7 @@ import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -176,8 +183,10 @@ public class SignalActivity extends AppCompatActivity {
         if (id == R.id.action_setting) {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
-        } else if (id == R.id.action_export) {
-            exportData();
+        } else if (id == R.id.action_export_all_data) {
+            exportAllData();
+        } else if (id == R.id.action_export_specified_data) {
+            setTimePeriod();
         } else if (id == R.id.action_delete_data) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Are your sure to delete all data?");
@@ -199,6 +208,105 @@ public class SignalActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setTimePeriod() {
+        final long[] time = new long[2];
+        final int[] dateTime = new int[5];
+
+        Calendar calendar = Calendar.getInstance();
+        final DatePickerDialog date1, date2;
+        final TimePickerDialog time1, time2;
+        time2 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                Log.v("time2", String.format("%d, %d", hourOfDay, minute));
+                dateTime[3] = hourOfDay;
+                dateTime[4] = minute;
+                time[1] = new GregorianCalendar(dateTime[0], dateTime[1], dateTime[2], dateTime[3], dateTime[4]).getTimeInMillis();
+                exportSpecifiedData(time[0], time[1]);
+            }
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+        time2.setTitle("End time");
+
+        date2 = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Log.v("date2", String.format("%d, %d, %d", year, monthOfYear, dayOfMonth));
+                dateTime[0] = year;
+                dateTime[1] = monthOfYear;
+                dateTime[2] = dayOfMonth;
+                time2.show();
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        date2.setTitle("End date");
+
+        time1 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                Log.v("time1", String.format("%d, %d", hourOfDay, minute));
+                dateTime[3] = hourOfDay;
+                dateTime[4] = minute;
+                time[0] = new GregorianCalendar(dateTime[0], dateTime[1], dateTime[2], dateTime[3], dateTime[4]).getTimeInMillis();
+                date2.show();
+            }
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+        time1.setTitle("Start time");
+
+        date1 = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Log.v("date1", String.format("%d, %d, %d", year, monthOfYear + 1, dayOfMonth));
+                dateTime[0] = year;
+                dateTime[1] = monthOfYear;
+                dateTime[2] = dayOfMonth;
+                time1.show();
+            }
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        date1.setTitle("Start date");
+        date1.show();
+    }
+
+
+    private void exportSpecifiedData(long startTime, long endTime) {
+        Log.v(TAG, "startTimestamp: " + startTime + ", endTimestamp: " + endTime);
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Record> results = realm.where(Record.class).between("mDate", new Date(startTime), new Date(endTime)).findAll();
+
+        rx.Observable.create(new Observable.OnSubscribe<List<JRecord>>() {
+            @Override
+            public void call(Subscriber<? super List<JRecord>> subscriber) {
+                List<JRecord> jRecords = new ArrayList<>();
+                for (Record r : results) {
+                    JRecord myRecord = new JRecord(r);
+                    jRecords.add(myRecord);
+                }
+                subscriber.onNext(jRecords);
+                subscriber.onCompleted();
+            }
+        }).subscribeOn(Schedulers.immediate())
+                .observeOn(Schedulers.io())
+                .subscribe(new Subscriber<List<JRecord>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.v(TAG, "export data successfully.");
+                        makeExportToast(true);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "export data failed.");
+                        makeExportToast(false);
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<JRecord> jRecords) {
+                        Gson gson = new Gson();
+                        String json = gson.toJson(jRecords);
+                        saveJson(json);
+                    }
+                });
     }
 
     private void deleteData() {
@@ -261,7 +369,7 @@ public class SignalActivity extends AppCompatActivity {
         }
     }
 
-    public void exportData() {
+    public void exportAllData() {
         Realm realm = Realm.getDefaultInstance();
         final RealmResults<Record> results = realm.where(Record.class).findAll();
 

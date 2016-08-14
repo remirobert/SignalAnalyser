@@ -19,5 +19,5 @@ public interface CellIdClient {
             @Query("lac") int lac,
             @Query("cellid") int cellId,
             @Query("format") String format
-        );
+    );
 }

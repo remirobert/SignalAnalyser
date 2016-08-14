@@ -21,6 +21,11 @@ public class SignalObserver extends PhoneStateListener {
 
     private Subscriber<? super SignalRecord> mSubscriber;
 
+    public SignalObserver(Context context) {
+        mContext = context;
+        mTelephonyManager = (TelephonyManager) mContext.getSystemService(mContext.TELEPHONY_SERVICE);
+    }
+
     private void signalMeasuring(SignalStrength signalStrength) {
         String ssignal = signalStrength.toString();
         String[] parts = ssignal.split(" ");
@@ -56,11 +61,6 @@ public class SignalObserver extends PhoneStateListener {
     public void onSignalStrengthsChanged(SignalStrength signalStrength) {
         super.onSignalStrengthsChanged(signalStrength);
         signalMeasuring(signalStrength);
-    }
-
-    public SignalObserver(Context context) {
-        mContext = context;
-        mTelephonyManager = (TelephonyManager) mContext.getSystemService(mContext.TELEPHONY_SERVICE);
     }
 
     private void startListening() {

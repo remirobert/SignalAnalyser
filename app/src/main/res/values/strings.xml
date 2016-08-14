@@ -17,7 +17,8 @@
     <string name="pref_header_data_sync">Data &amp; sync</string>
     <!-- Example settings for Notifications -->
     <string name="pref_header_notifications">Notifications</string>
-    <string name="action_export">Export data as JSON</string>
-    <string name="action_delete_data">Delete data</string>
+    <string name="action_export_specified_data">Export specified data</string>
+    <string name="action_export_all_data">Export all data</string>
+    <string name="action_delete_data">Delete all data</string>
     <string name="action_delete_selected_record">Delete selected record</string>
 </resources>

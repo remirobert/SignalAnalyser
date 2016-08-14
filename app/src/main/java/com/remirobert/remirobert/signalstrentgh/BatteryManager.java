@@ -15,6 +15,10 @@ public class BatteryManager {
     private Context mContext;
     private BroadcastReceiver mBroadcastReceiver;
 
+    public BatteryManager(Context context) {
+        mContext = context;
+    }
+
     private double getBatteryCapacity() {
         Object mPowerProfile_ = null;
 
@@ -65,9 +69,5 @@ public class BatteryManager {
                 mContext.registerReceiver(mBroadcastReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
             }
         });
-    }
-
-    public BatteryManager(Context context) {
-        mContext = context;
     }
 }

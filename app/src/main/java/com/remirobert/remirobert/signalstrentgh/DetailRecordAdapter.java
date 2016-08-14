@@ -11,19 +11,12 @@ import java.util.List;
 /**
  * Created by remirobert on 02/08/16.
  */
-public class DetailRecordAdaptater extends RecyclerView.Adapter<DetailRecordAdaptater.RecordInfoHolder> {
+public class DetailRecordAdapter extends RecyclerView.Adapter<DetailRecordAdapter.RecordInfoHolder> {
 
     private List<ListInfo> mLists;
 
-    public static class RecordInfoHolder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView subtitle;
-
-        RecordInfoHolder(final View itemView) {
-            super(itemView);
-            title = (TextView) itemView.findViewById(R.id.list_item_title);
-            subtitle = (TextView) itemView.findViewById(R.id.list_item_content);
-        }
+    public DetailRecordAdapter(List<ListInfo> lists) {
+        mLists = lists;
     }
 
     @Override
@@ -50,7 +43,14 @@ public class DetailRecordAdaptater extends RecyclerView.Adapter<DetailRecordAdap
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public DetailRecordAdaptater(List<ListInfo> lists) {
-        mLists = lists;
+    public static class RecordInfoHolder extends RecyclerView.ViewHolder {
+        TextView title;
+        TextView subtitle;
+
+        RecordInfoHolder(final View itemView) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.list_item_title);
+            subtitle = (TextView) itemView.findViewById(R.id.list_item_content);
+        }
     }
 }

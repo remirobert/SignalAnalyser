@@ -35,7 +35,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.RecordView
     @Override
     public void onBindViewHolder(final RecordViewHolder holder, final int position) {
         final Record record = mRecordList.get(position);
-        holder.title.setText("#" + (mRecordList.size() - position));
+        holder.title.setText(String.format("#%d  [%s]", mRecordList.size() - position, record.getId()));
 
         SimpleDateFormat format = new SimpleDateFormat("dd-MMM-yyyy  hh:mm a");
         String date = format.format(java.sql.Date.parse(record.getDate().toString()));

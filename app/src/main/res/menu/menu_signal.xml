@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.remirobert.remirobert.signalstrentgh.SignalActivity" >
+    tools:context="com.remirobert.remirobert.signalstrentgh.SignalActivity">
 
     <item
         android:id="@+id/action_setting"
@@ -11,14 +11,20 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_export"
+        android:id="@+id/action_export_all_data"
         android:orderInCategory="200"
-        android:title="@string/action_export"
+        android:title="@string/action_export_all_data"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_export_specified_data"
+        android:orderInCategory="300"
+        android:title="@string/action_export_specified_data"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_delete_data"
-        android:orderInCategory="300"
+        android:orderInCategory="400"
         android:title="@string/action_delete_data"
         app:showAsAction="never" />
 

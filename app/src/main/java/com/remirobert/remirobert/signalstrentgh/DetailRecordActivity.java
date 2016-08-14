@@ -31,7 +31,7 @@ public class DetailRecordActivity extends AppCompatActivity {
     private MapView mMapView;
     private Record mRecord;
 
-    private List<ListInfo>getDataAdaptator() {
+    private List<ListInfo> getDataAdapter() {
         List<ListInfo> listInfos = new ArrayList<>();
 
         ListInfo infoDate = new ListInfo();
@@ -95,7 +95,7 @@ public class DetailRecordActivity extends AppCompatActivity {
         infoLatitude.setTitle("Latitude :");
         infoLatitude.setContent(mRecord.getLatitude() + "");
 
-        ListInfo infoLongitude= new ListInfo();
+        ListInfo infoLongitude = new ListInfo();
         infoLongitude.setTitle("Longitude :");
         infoLongitude.setContent(mRecord.getLongitude() + "");
 
@@ -195,7 +195,7 @@ public class DetailRecordActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         mListView.setLayoutManager(llm);
 
-        DetailRecordAdaptater adapter = new DetailRecordAdaptater(getDataAdaptator());
+        DetailRecordAdapter adapter = new DetailRecordAdapter(getDataAdapter());
         mListView.setAdapter(adapter);
 
         mMapView.setAccessToken("pk.eyJ1IjoicmVtaXJvYmVydDMzNTMwIiwiYSI6ImNpcjF4eDc1dTAwOGpodW5uYmp1b2VqZ2sifQ.uqX-g4VqZxPTsOK0qx77KQ");
