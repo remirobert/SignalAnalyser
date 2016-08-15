@@ -120,6 +120,66 @@ public class DetailRecordActivity extends AppCompatActivity {
         listInfos.add(infoLongitude);
         listInfos.add(new ListInfo());
 
+        ListInfo connectedTowerSep = new ListInfo();
+        connectedTowerSep.setTitle("Connected tower: ");
+        listInfos.add(connectedTowerSep);
+        CellularTower t = mRecord.getConnectedTower();
+        ListInfo type1 = new ListInfo();
+        type1.setTitle("Type: ");
+        type1.setContent(t.getType());
+        listInfos.add(type1);
+
+        ListInfo lac1 = new ListInfo();
+        lac1.setTitle("LAC :");
+        lac1.setContent(t.getLac() + "");
+        listInfos.add(lac1);
+
+        ListInfo cid1 = new ListInfo();
+        cid1.setTitle("CID :");
+        cid1.setContent(t.getCid() + "");
+        listInfos.add(cid1);
+
+        ListInfo mcc1 = new ListInfo();
+        mcc1.setTitle("MCC :");
+        mcc1.setContent(t.getMcc() + "");
+        listInfos.add(mcc1);
+
+        ListInfo mnc1 = new ListInfo();
+        mnc1.setTitle("MNC :");
+        mnc1.setContent(t.getMnc() + "");
+        listInfos.add(mnc1);
+
+        ListInfo psc_or_pci1 = new ListInfo();
+        psc_or_pci1.setTitle("PSC_or_PCI: ");
+        psc_or_pci1.setContent(t.getPsc_or_pci() + "");
+        listInfos.add(psc_or_pci1);
+
+        ListInfo lat1 = new ListInfo();
+        lat1.setTitle("Latitude :");
+        lat1.setContent(t.getLat() + "");
+        listInfos.add(lat1);
+
+        ListInfo lon1 = new ListInfo();
+        lon1.setTitle("Longitude :");
+        lon1.setContent(t.getLon() + "");
+        listInfos.add(lon1);
+
+        ListInfo asuLevel1 = new ListInfo();
+        asuLevel1.setTitle("ASU level :");
+        asuLevel1.setContent(t.getAsuLevel() + "");
+        listInfos.add(asuLevel1);
+
+        ListInfo signalLevel1 = new ListInfo();
+        signalLevel1.setTitle("Signal level :");
+        signalLevel1.setContent(t.getSignalLevel() + "");
+        listInfos.add(signalLevel1);
+
+        ListInfo signalDbm1 = new ListInfo();
+        signalDbm1.setTitle("Signal DBM :");
+        signalDbm1.setContent(t.getSignalDbm() + "");
+        listInfos.add(signalDbm1);
+        listInfos.add(new ListInfo());
+
         ListInfo infoTitleTower = new ListInfo();
         infoTitleTower.setTitle("Cell tower list :");
         listInfos.add(infoTitleTower);
@@ -129,6 +189,11 @@ public class DetailRecordActivity extends AppCompatActivity {
             ListInfo sepTower = new ListInfo();
             sepTower.setTitle("----------------------");
             listInfos.add(sepTower);
+
+            ListInfo type = new ListInfo();
+            type.setTitle("Type: ");
+            type.setContent(tower.getType());
+            listInfos.add(type);
 
             ListInfo lac = new ListInfo();
             lac.setTitle("LAC :");
@@ -149,6 +214,11 @@ public class DetailRecordActivity extends AppCompatActivity {
             mnc.setTitle("MNC :");
             mnc.setContent(tower.getMnc() + "");
             listInfos.add(mnc);
+
+            ListInfo psc_or_pci = new ListInfo();
+            psc_or_pci.setTitle("PSC_or_PCI: ");
+            psc_or_pci.setContent(tower.getPsc_or_pci() + "");
+            listInfos.add(psc_or_pci);
 
             ListInfo lat = new ListInfo();
             lat.setTitle("Latitude :");

@@ -108,7 +108,7 @@ public class CellTowerManager {
         } else {
             Log.e(TAG, "CDMA CellInfo................................................");
         }
-        return checkInvalidData(cellularTower);
+        return cellularTower;
     }
 
     public CellularTower getConnectedTower() {
