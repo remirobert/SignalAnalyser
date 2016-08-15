@@ -17,7 +17,7 @@ public class CellularTower extends RealmObject implements Serializable {
     private int mnc;
     private int lac;
     private int cid;
-    private int psc;
+    private int psc_or_pci;
     private double lat;
     private double lon;
     private int asuLevel;
@@ -72,12 +72,12 @@ public class CellularTower extends RealmObject implements Serializable {
         this.cid = cid;
     }
 
-    public int getPsc() {
-        return psc;
+    public int getPsc_or_pci() {
+        return psc_or_pci;
     }
 
-    public void setPsc(int psc) {
-        psc = psc;
+    public void setPsc_or_pci(int psc_or_pci) {
+        this.psc_or_pci = psc_or_pci;
     }
 
     public double getLat() {
@@ -123,16 +123,16 @@ public class CellularTower extends RealmObject implements Serializable {
     @Override
     public String toString() {
         return "CellularTower{" +
-                "id='" + id + '\'' +
-                ", type=" + type +
+                "asuLevel=" + asuLevel +
+                ", id='" + id + '\'' +
+                ", type='" + type + '\'' +
                 ", mcc=" + mcc +
                 ", mnc=" + mnc +
                 ", lac=" + lac +
                 ", cid=" + cid +
-                ", cid=" + psc +
+                ", psc_or_pci=" + psc_or_pci +
                 ", lat=" + lat +
                 ", lon=" + lon +
-                ", asuLevel=" + asuLevel +
                 ", signalLevel=" + signalLevel +
                 ", signalDbm=" + signalDbm +
                 '}';

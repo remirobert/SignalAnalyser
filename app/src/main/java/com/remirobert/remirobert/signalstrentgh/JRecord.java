@@ -222,6 +222,7 @@ public class JRecord {
         int mnc;
         int lac;
         int cid;
+        int psc_or_pci;
         double lat;
         double lon;
         String type;
@@ -237,12 +238,22 @@ public class JRecord {
             mnc = c.getMnc();
             lac = c.getLac();
             cid = c.getCid();
+            psc_or_pci = c.getPsc_or_pci();
+
             lat = c.getLat();
             lon = c.getLon();
             type = c.getType();
             asuLevel = c.getAsuLevel();
             signalLevel = c.getSignalLevel();
             signalDbm = c.getSignalDbm();
+        }
+
+        public int getPsc_or_pci() {
+            return psc_or_pci;
+        }
+
+        public void setPsc_or_pci(int psc_or_pci) {
+            this.psc_or_pci = psc_or_pci;
         }
 
         public String getType() {

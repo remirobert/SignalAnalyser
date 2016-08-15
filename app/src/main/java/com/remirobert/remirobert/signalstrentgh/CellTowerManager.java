@@ -69,6 +69,7 @@ public class CellTowerManager {
             cellularTower.setLac(cellIdentityWcdma.getLac());
             cellularTower.setMcc(cellIdentityWcdma.getMcc());
             cellularTower.setMnc(cellIdentityWcdma.getMnc());
+            cellularTower.setPsc_or_pci(cellIdentityWcdma.getPsc());
             if (cellInfoWcdma.getCellSignalStrength() != null) {
                 cellularTower.setAsuLevel(cellInfoWcdma.getCellSignalStrength().getAsuLevel()); //Get the signal level as an asu value between 0..31, 99 is unknown Asu is calculated based on 3GPP RSRP.
                 cellularTower.setSignalLevel(cellInfoWcdma.getCellSignalStrength().getLevel()); //Get signal level as an int from 0..4
@@ -83,6 +84,7 @@ public class CellTowerManager {
             cellularTower.setMnc(cellIdentityLte.getMnc());
             cellularTower.setMcc(cellIdentityLte.getMcc());
             cellularTower.setLac(cellIdentityLte.getTac());
+            cellularTower.setPsc_or_pci(cellIdentityLte.getPci());
             if (cellInfoLte.getCellSignalStrength() != null) {
                 cellularTower.setAsuLevel(cellInfoLte.getCellSignalStrength().getAsuLevel());
                 cellularTower.setSignalLevel(cellInfoLte.getCellSignalStrength().getLevel());
@@ -97,6 +99,7 @@ public class CellTowerManager {
             cellularTower.setLac(cellIdentityGsm.getLac());
             cellularTower.setMcc(cellIdentityGsm.getMcc());
             cellularTower.setMnc(cellIdentityGsm.getMnc());
+            cellularTower.setPsc_or_pci(cellIdentityGsm.getPsc());
             if (cellInfoGsm.getCellSignalStrength() != null) {
                 cellularTower.setAsuLevel(cellInfoGsm.getCellSignalStrength().getAsuLevel());
                 cellularTower.setSignalLevel(cellInfoGsm.getCellSignalStrength().getLevel());
@@ -127,12 +130,12 @@ public class CellTowerManager {
         tower.setMnc(mnc);
 
         if (cellLocation instanceof GsmCellLocation) {
-            tower.setPsc(((GsmCellLocation) cellLocation).getPsc());
+            tower.setPsc_or_pci(((GsmCellLocation) cellLocation).getPsc());
             tower.setCid(((GsmCellLocation) cellLocation).getCid());
             tower.setLac(((GsmCellLocation) cellLocation).getLac());
             tower.setType("GSM");
             Log.v(TAG, "Get connected tower GSM");
-            Log.v(TAG, ((GsmCellLocation) cellLocation).toString());
+            Log.v(TAG, cellLocation.toString());
         }
         return tower;
     }
