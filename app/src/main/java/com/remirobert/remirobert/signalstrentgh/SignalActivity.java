@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -50,16 +51,15 @@ import rx.schedulers.Schedulers;
 public class SignalActivity extends AppCompatActivity {
 
     private static final String TAG = "SignalActivity";
-    private static final int REQUEST_LOCATION = 1;
-
+    private static final int REQUEST_PERMISSION = 123;
     private Handler mHandler;
-    private boolean record = false;
+    private boolean recording = false;
     private RecordManager mRecordManager;
     private Runnable mDataCollection = new Runnable() {
         @Override
         public void run() {
             try {
-                checkPermissionUser();
+                checkPermissionUser2();
             } finally {
                 SignalStrenght signalStrenght = (SignalStrenght) getApplication();
                 mHandler.postDelayed(mDataCollection, signalStrenght.getmTimeInterval());
@@ -104,28 +104,44 @@ public class SignalActivity extends AppCompatActivity {
         });
     }
 
-    private void checkPermissionUser() {
-        Log.v(TAG, "check location permission");
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_NETWORK_STATE)
-                        != PackageManager.PERMISSION_GRANTED) {
+    private void checkPermissionUser1() {
+        Log.v(TAG, "check permission1");
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            stopRecording();
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
+        } else {
+            startRecording();
+        }
+    }
 
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_NETWORK_STATE}, REQUEST_LOCATION);
+    private void checkPermissionUser2() {
+        Log.v(TAG, "check permission2");
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            stopRecording();
+            Toast.makeText(this, "Error permissions", Toast.LENGTH_SHORT).show();
+            /*ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_PHONE_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION);*/
         } else {
             requestRecord();
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == REQUEST_LOCATION) {
-            if (grantResults.length == 1
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                requestRecord();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults.length == 3 && grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                startRecording();
             } else {
-                Toast.makeText(this, "Error permission", Toast.LENGTH_SHORT).show();
+                stopRecording();
+                Toast.makeText(this, "Error permissions", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -142,20 +158,10 @@ public class SignalActivity extends AppCompatActivity {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (record) {
+                    if (recording) {
                         stopRecording();
-                        record = false;
-                        setTitle("SignalStrength" + "(stopped)");
-                        TextView textView = (TextView) findViewById(R.id.fab_text);
-                        textView.setText("Start");
                     } else {
-                        //SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                        //long tInterval = Long.parseLong(sharedPref.getString(getString(R.string.pref_general_time_interval), "5"));
-                        startRecording();
-                        record = true;
-                        setTitle("SignalStrength" + "(recording...)");
-                        TextView textView = (TextView) findViewById(R.id.fab_text);
-                        textView.setText("Stop");
+                        checkPermissionUser1();
                     }
                 }
             });
@@ -168,12 +174,30 @@ public class SignalActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (recording) {
+            setTitle("SignalStrength" + "(recording...)");
+        } else {
+            setTitle("SignalStrength" + "(stopped)");
+        }
+    }
+
     private void startRecording() {
         mDataCollection.run();
+        recording = true;
+        setTitle("SignalStrength" + "(recording...)");
+        TextView textView = (TextView) findViewById(R.id.fab_text);
+        textView.setText("Stop");
     }
 
     private void stopRecording() {
         mHandler.removeCallbacks(mDataCollection);
+        recording = false;
+        setTitle("SignalStrength" + "(stopped)");
+        TextView textView = (TextView) findViewById(R.id.fab_text);
+        textView.setText("Start");
     }
 
     @Override
@@ -328,7 +352,8 @@ public class SignalActivity extends AppCompatActivity {
 
     public void saveJson(String json) {
         if (isExternalStorageWritable()) {
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getString(R.string.export_data_dir_name));
+            File dir1 = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), getString(R.string.app_dir_name));
+            File dir = new File(dir1, getString(R.string.export_data_dir_name));
             if (!dir.mkdirs()) {
                 Log.e(TAG, "Directory not created");
             }
@@ -361,7 +386,7 @@ public class SignalActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(getApplicationContext(), "export data successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "export data successfully, data in /Documents/SignalStrength/ExportedData", Toast.LENGTH_SHORT).show();
                 }
             });
         } else {

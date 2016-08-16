@@ -3,7 +3,9 @@
 
     <string name="title_activity_settings">Settings</string>
 
-    <string name="export_data_dir_name">SignalStrengthExportData</string>
+    <string name="app_dir_name">SignalStrength</string>
+    <string name="log_dir_name">Log</string>
+    <string name="export_data_dir_name">ExportedData</string>
     <string name="export_data_file_name_prefix">records</string>
 
     <!-- Strings related to Settings -->

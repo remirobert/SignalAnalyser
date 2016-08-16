@@ -39,6 +39,10 @@ public class SignalStrenght extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
+
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(realmConfiguration);
 

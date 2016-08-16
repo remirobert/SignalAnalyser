@@ -133,7 +133,7 @@ public class CellTowerManager {
             tower.setPsc_or_pci(((GsmCellLocation) cellLocation).getPsc());
             tower.setCid(((GsmCellLocation) cellLocation).getCid());
             tower.setLac(((GsmCellLocation) cellLocation).getLac());
-            tower.setType("GSM");
+            tower.setType("");
             Log.v(TAG, "Get connected tower GSM");
             Log.v(TAG, cellLocation.toString());
         }
