@@ -95,7 +95,7 @@ public class SignalActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Log.e(TAG, t.getMessage());
+                        Log.e(TAG, "request fail, " + t.getMessage());
                     }
                 });
                 Log.v(TAG, "got record");

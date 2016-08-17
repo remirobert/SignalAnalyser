@@ -170,7 +170,7 @@ public class CellTowerManager {
             public void call(final Subscriber<? super CellularTower> subscriber) {
                 ServiceGenerator.changeApiBaseUrl("http://opencellid.org");
                 final CellIdClient cellIdClient = ServiceGenerator.createService(CellIdClient.class);
-                Call<CellIdResponse> cellIdResponseCall = cellIdClient.cellInformations("e5dad4a2-e436-412c-8178-064b8fef2ecc",
+                Call<CellIdResponse> cellIdResponseCall = cellIdClient.cellInformations("1085e718-c5a6-4392-9062-e57527c7bd97",
                         cellularTower.getMcc(),
                         cellularTower.getMnc(),
                         cellularTower.getLac(),
@@ -182,7 +182,7 @@ public class CellTowerManager {
                     public void onResponse(Call<CellIdResponse> call, Response<CellIdResponse> response) {
                         Log.v(TAG, "request : " + call.request().toString());
                         Log.v(TAG, "response request : " + response.body());
-                        Log.e(TAG, "response errorBody : " + response.errorBody());
+                        Log.v(TAG, "response errorBody : " + response.errorBody());
 
                         CellIdResponse cellIdResponse = response.body();
 
