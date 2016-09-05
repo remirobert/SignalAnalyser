@@ -12,6 +12,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * handset devices, settings are presented as a single list. On tablets,
  * settings are split by category, with category headers shown to the left of
  * the list of settings.
- * <p/>
+ * <p>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
  * Android Design: Settings</a> for design guidelines and the <a
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
@@ -35,13 +36,28 @@ public class SettingsActivity extends PreferenceActivity {
     private static Preference.OnPreferenceChangeListener onPreferenceChangeListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
-            if (preference.getKey().equals("time_interval")) {
+            /*if (preference.getKey().equals("time_interval")) {
                 String stringValue = value.toString();
                 if (Long.parseLong(stringValue) <= 0)
                     return false;
                 preference.setSummary(stringValue + "s");
+            }*/
+            switch (preference.getKey()) {
+                case "time_interval": {
+                    String stringValue = value.toString();
+                    if (Long.parseLong(stringValue) <= 0)
+                        return false;
+                    preference.setSummary(stringValue + "s");
+                    return true;
+                }
+                case "delete_old_on_export": {
+                    Log.e("[][]", "====");
+                    return true;
+                }
+                default:
+                    return true;
             }
-            return true;
+            /*return true;*/
         }
     };
 

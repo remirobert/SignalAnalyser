@@ -9,6 +9,7 @@ import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
 import android.telephony.CellInfoWcdma;
 import android.telephony.CellLocation;
+import android.telephony.NeighboringCellInfo;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
@@ -17,9 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.FuncN;
@@ -117,12 +115,12 @@ public class CellTowerManager {
         try {
             mcc = Integer.parseInt(operator.substring(0, 3));
         } catch (Exception e) {
-            mcc = 0;
+            mcc = -2;
         }
         try {
             mnc = Integer.parseInt(operator.substring(3));
         } catch (Exception e) {
-            mnc = 0;
+            mnc = -2;
         }
         CellLocation cellLocation = mTelephonyManager.getCellLocation();
         CellularTower tower = new CellularTower();
@@ -140,35 +138,100 @@ public class CellTowerManager {
         return tower;
     }
 
+    /**
+     * Get information of all cells that can be listened by the phone.
+     * Call getAllCellInfo() and getNeighboringCellInfo() respectively,
+     * since one or two of these api may return null.
+     *
+     * @return List of CellularTower, CellularTower is a class contains cell info
+     */
     public List<CellularTower> getTowerList() {
-        List<CellInfo> cellInfoList = null;
         List<CellularTower> cellularTowerList = new ArrayList<>();
 
+        // Firstly try getAllCellInfo() api
+        List<CellInfo> cellInfoList = null;
         cellInfoList = mTelephonyManager.getAllCellInfo();
-        if (cellInfoList == null || cellInfoList.size() == 0) {
-            if (cellInfoList == null) {
-                Log.v(TAG, "getAllCellInfo() returns null");
-            } else {
-                Log.v(TAG, "getAllCellInfo() list size 0");
-            }
-            return cellularTowerList;
+        // then the
+        List<NeighboringCellInfo> neighboringCellInfoList = null;
+        neighboringCellInfoList = mTelephonyManager.getNeighboringCellInfo();
+
+        /*
+        * decide which list will be used:
+        * flag = 0, use cellInfoList,
+        * flag = 1, use neighboringCellInfoList,
+        * flag = -1, return cellularTowerList directly, whose size = 0.
+        * */
+        int flag = 0;
+        if (cellInfoList == null && neighboringCellInfoList == null) {
+            flag = -1;
+        } else if (cellInfoList == null && neighboringCellInfoList != null) {
+            flag = 1;
+        } else if (cellInfoList != null && neighboringCellInfoList == null) {
+            flag = 0;
+        } else {
+            flag = cellInfoList.size() > neighboringCellInfoList.size() ? 0 : 1;
         }
 
-        for (int i = 0; i < cellInfoList.size(); i++) {
-            final CellInfo cellInfo = cellInfoList.get(i);
-            final CellularTower cellularTower = bindData(cellInfo);
-            if (cellularTower != null) {
-                cellularTowerList.add(cellularTower);
+        switch (flag) {
+            case 0: {
+                for (int i = 0; i < cellInfoList.size(); i++) {
+                    final CellInfo cellInfo = cellInfoList.get(i);
+                    final CellularTower cellularTower = bindData(cellInfo);
+                    if (cellularTower != null) {
+                        cellularTowerList.add(cellularTower);
+                    }
+                }
+                return cellularTowerList;
+            }
+            case 1: {
+                for (int i = 0; i < neighboringCellInfoList.size(); i++) {
+                    final NeighboringCellInfo ninfo = neighboringCellInfoList.get(i);
+                    final CellularTower cellularTower = new CellularTower();
+                    if (ninfo.getNetworkType() == TelephonyManager.NETWORK_TYPE_GPRS ||
+                            ninfo.getNetworkType() == TelephonyManager.NETWORK_TYPE_EDGE) {
+                        cellularTower.setType("GSM");
+                    } else {
+                        cellularTower.setType("");
+                    }
+                    String operator = mTelephonyManager.getNetworkOperator();
+                    int mcc, mnc;
+                    try {
+                        mcc = Integer.parseInt(operator.substring(0, 3));
+                    } catch (Exception e) {
+                        mcc = -2;
+                    }
+                    try {
+                        mnc = Integer.parseInt(operator.substring(3));
+                    } catch (Exception e) {
+                        mnc = -2;
+                    }
+                    cellularTower.setMcc(mcc);
+                    cellularTower.setMnc(mnc);
+                    cellularTower.setLac(ninfo.getLac());
+                    cellularTower.setCid(ninfo.getCid());
+                    cellularTower.setPsc_or_pci(ninfo.getPsc());
+                    cellularTower.setAsuLevel(ninfo.getRssi());
+                    cellularTower.setSignalDbm(-113 + 2 * ninfo.getRssi());
+                    cellularTowerList.add(cellularTower);
+                }
+                return cellularTowerList;
+            }
+            default: {
+                Log.v(TAG, "getAllCellInfo() & getNeighboringCellInfo() both return null");
+                return cellularTowerList;
             }
         }
-        return cellularTowerList;
+
+
     }
 
     private rx.Observable<CellularTower> locationTower(final CellularTower cellularTower) {
         return rx.Observable.create(new Observable.OnSubscribe<CellularTower>() {
             @Override
             public void call(final Subscriber<? super CellularTower> subscriber) {
-                ServiceGenerator.changeApiBaseUrl("http://opencellid.org");
+                subscriber.onNext(cellularTower);
+                subscriber.onCompleted();
+                /*ServiceGenerator.changeApiBaseUrl("http://opencellid.org");
                 final CellIdClient cellIdClient = ServiceGenerator.createService(CellIdClient.class);
                 Call<CellIdResponse> cellIdResponseCall = cellIdClient.cellInformations("1085e718-c5a6-4392-9062-e57527c7bd97",
                         cellularTower.getMcc(),
@@ -203,7 +266,7 @@ public class CellTowerManager {
                         subscriber.onNext(cellularTower);
                         subscriber.onCompleted();
                     }
-                });
+                });*/
             }
         });
     }

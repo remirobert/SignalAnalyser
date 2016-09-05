@@ -9,4 +9,10 @@
         android:singleLine="true"
         android:title="Record time interval" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="delete_old_on_export"
+        android:title="Delete old data when export"
+        android:summary="If this turn on, all old data will be deleted when exporting" />
+
 </PreferenceScreen>

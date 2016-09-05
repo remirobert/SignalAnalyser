@@ -3,12 +3,15 @@ package com.remirobert.remirobert.signalstrentgh;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -105,7 +108,6 @@ public class SignalActivity extends AppCompatActivity {
     }
 
     private void checkPermissionUser1() {
-        Log.v(TAG, "check permission1");
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -119,7 +121,6 @@ public class SignalActivity extends AppCompatActivity {
     }
 
     private void checkPermissionUser2() {
-        Log.v(TAG, "check permission2");
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -175,6 +176,37 @@ public class SignalActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        checkGPSStatus();
+    }
+
+    private void checkGPSStatus() {
+        android.location.LocationManager locationManager = (android.location.LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("GPS is not enabled, open it now?");
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent();
+                    intent.setAction(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(intent);
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.create().show();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (recording) {
@@ -182,6 +214,12 @@ public class SignalActivity extends AppCompatActivity {
         } else {
             setTitle("SignalStrength" + "(stopped)");
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mHandler.removeCallbacks(mDataCollection);
     }
 
     private void startRecording() {
@@ -249,7 +287,6 @@ public class SignalActivity extends AppCompatActivity {
         time2 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                Log.v("time2", String.format("%d, %d", hourOfDay, minute));
                 dateTime[3] = hourOfDay;
                 dateTime[4] = minute;
                 time[1] = new GregorianCalendar(dateTime[0], dateTime[1], dateTime[2], dateTime[3], dateTime[4]).getTimeInMillis();
@@ -261,7 +298,6 @@ public class SignalActivity extends AppCompatActivity {
         date2 = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Log.v("date2", String.format("%d, %d, %d", year, monthOfYear, dayOfMonth));
                 dateTime[0] = year;
                 dateTime[1] = monthOfYear;
                 dateTime[2] = dayOfMonth;
@@ -273,7 +309,6 @@ public class SignalActivity extends AppCompatActivity {
         time1 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                Log.v("time1", String.format("%d, %d", hourOfDay, minute));
                 dateTime[3] = hourOfDay;
                 dateTime[4] = minute;
                 time[0] = new GregorianCalendar(dateTime[0], dateTime[1], dateTime[2], dateTime[3], dateTime[4]).getTimeInMillis();
@@ -285,7 +320,6 @@ public class SignalActivity extends AppCompatActivity {
         date1 = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Log.v("date1", String.format("%d, %d, %d", year, monthOfYear + 1, dayOfMonth));
                 dateTime[0] = year;
                 dateTime[1] = monthOfYear;
                 dateTime[2] = dayOfMonth;
@@ -298,7 +332,6 @@ public class SignalActivity extends AppCompatActivity {
 
 
     private void exportSpecifiedData(long startTime, long endTime) {
-        Log.v(TAG, "startTimestamp: " + startTime + ", endTimestamp: " + endTime);
         Realm realm = Realm.getDefaultInstance();
         final RealmResults<Record> results = realm.where(Record.class).between("mDate", new Date(startTime), new Date(endTime)).findAll();
 
