@@ -24,4 +24,20 @@
     <string name="action_delete_data">Delete all data</string>
     <string name="action_delete_selected_record">Delete selected record</string>
     <string name="start_recording">Start</string>
+
+    <string-array name="travel_mode">
+        <item>Walk</item>
+        <item>Bicycle</item>
+        <item>Subway</item>
+        <item>Taxi</item>
+        <item>Car</item>
+    </string-array>
+
+    <string-array name="travel_mode_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 </resources>

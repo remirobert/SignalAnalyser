@@ -8,26 +8,15 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;
 
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
 public class SettingsActivity extends PreferenceActivity {
     /**
      * A preference value change listener that updates the preference's summary
@@ -36,12 +25,6 @@ public class SettingsActivity extends PreferenceActivity {
     private static Preference.OnPreferenceChangeListener onPreferenceChangeListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
-            /*if (preference.getKey().equals("time_interval")) {
-                String stringValue = value.toString();
-                if (Long.parseLong(stringValue) <= 0)
-                    return false;
-                preference.setSummary(stringValue + "s");
-            }*/
             switch (preference.getKey()) {
                 case "time_interval": {
                     String stringValue = value.toString();
@@ -50,14 +33,9 @@ public class SettingsActivity extends PreferenceActivity {
                     preference.setSummary(stringValue + "s");
                     return true;
                 }
-                case "delete_old_on_export": {
-                    Log.e("[][]", "====");
-                    return true;
-                }
                 default:
                     return true;
             }
-            /*return true;*/
         }
     };
 
@@ -165,7 +143,118 @@ public class SettingsActivity extends PreferenceActivity {
             setHasOptionsMenu(true);
 
             bindPreferenceSummaryToValue(findPreference("time_interval"));
+            addModeToModeList(findPreference("add_mode"), findPreference("modes"));
+            deleteModeFromModeList(findPreference("delete_mode"), findPreference("modes"));
         }
+
+        private void deleteModeFromModeList(Preference delete_mode, final Preference modes) {
+            delete_mode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object value) {
+                    String mode = value.toString();
+                    ListPreference list = (ListPreference) modes;
+                    CharSequence[] entries = list.getEntries();
+                    CharSequence[] entryValues = list.getEntryValues();
+                    CharSequence[] newEntries = deleteEntry(entries, mode);
+                    CharSequence[] newEntryValues = deleteEntryValue(entries, entryValues, mode);
+                    list.setEntries(newEntries);
+                    list.setEntryValues(newEntryValues);
+                    return true;
+                }
+            });
+        }
+
+        private CharSequence[] deleteEntryValue(CharSequence[] entries, CharSequence[] entryValues, String mode) {
+            mode = mode.toLowerCase();
+            boolean exist = false;
+            for (CharSequence entry : entries) {
+                if (entry.toString().toLowerCase().equals(mode)) {
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist)
+                return entryValues;
+            int l = entries.length, k = 0;
+            for (int i = 0; i < l; i++) {
+                if (entries[i].toString().toLowerCase().equals(mode)) {
+                    k = i;
+                    break;
+                }
+            }
+            CharSequence[] newEntryValues = new CharSequence[l - 1];
+            for (int i = 0, j = 0; i < l; i++) {
+                if (i != k) {
+                    newEntryValues[j++] = entryValues[i];
+                }
+            }
+            return newEntryValues;
+        }
+
+
+        private CharSequence[] deleteEntry(CharSequence[] entries, String mode) {
+            mode = mode.toLowerCase();
+            boolean exist = false;
+            for (CharSequence entry : entries) {
+                if (entry.toString().toLowerCase().equals(mode)) {
+                    exist = true;
+                    break;
+                }
+            }
+            if (!exist)
+                return entries;
+            int l = entries.length;
+            CharSequence[] newEntries = new CharSequence[l - 1];
+            for (int i = 0, j = 0; i < l; i++) {
+                if (!entries[i].toString().toLowerCase().equals(mode)) {
+                    newEntries[j++] = entries[i];
+                }
+            }
+            return newEntries;
+        }
+
+        private void addModeToModeList(final Preference add_mode, final Preference modes) {
+            add_mode.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    String newMode = newValue.toString();
+                    if (newMode.equals(""))
+                        return true;
+                    ListPreference list = (ListPreference) modes;
+                    CharSequence[] entries = list.getEntries();
+                    CharSequence[] entryValues = list.getEntryValues();
+                    CharSequence[] newEntries = addEntry(entries, newMode);
+                    CharSequence[] newEntryValues = addEntryValue(entryValues);
+                    list.setEntries(newEntries);
+                    list.setEntryValues(newEntryValues);
+                    return true;
+                }
+            });
+        }
+
+        private CharSequence[] addEntryValue(CharSequence[] entryValues) {
+            int l = entryValues.length;
+            CharSequence[] newEntryValues = new CharSequence[l + 1];
+            System.arraycopy(entryValues, 0, newEntryValues, 0, l);
+            int max = Integer.parseInt(entryValues[0].toString());
+            for (int i = 1; i < l; i++) {
+                int t = Integer.parseInt(entryValues[i].toString());
+                if (t > max) {
+                    max = t;
+                }
+            }
+            newEntryValues[l] = Integer.toString(max + 1);
+            return newEntryValues;
+        }
+
+        private CharSequence[] addEntry(CharSequence[] entries, String newMode) {
+            int l = entries.length;
+            CharSequence[] newEntries = new CharSequence[l + 1];
+            System.arraycopy(entries, 0, newEntries, 0, l);
+            newEntries[l] = newMode;
+            return newEntries;
+        }
+
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {

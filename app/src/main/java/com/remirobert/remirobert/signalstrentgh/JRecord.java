@@ -16,6 +16,7 @@ public class JRecord {
     private double latitude;
     private double longitude;
     private long date;
+    private String mode;
 
     public JRecord(Record r) {
         id = r.getId();
@@ -30,6 +31,15 @@ public class JRecord {
         latitude = r.getLatitude();
         longitude = r.getLongitude();
         date = r.getDate().getTime();
+        mode = r.getMode();
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
     public double getLatitude() {

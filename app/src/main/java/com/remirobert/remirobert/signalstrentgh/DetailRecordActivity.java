@@ -40,6 +40,10 @@ public class DetailRecordActivity extends AppCompatActivity {
         String date = format.format(java.sql.Date.parse(mRecord.getDate().toString()));
         infoDate.setContent(date);
 
+        ListInfo infoMode = new ListInfo();
+        infoMode.setTitle("Mode: ");
+        infoMode.setContent(mRecord.getMode());
+
         ListInfo infoAndroidVersion = new ListInfo();
         infoAndroidVersion.setTitle("Android version :");
         infoAndroidVersion.setContent(mRecord.getDevice().getOsVersion());
@@ -100,6 +104,7 @@ public class DetailRecordActivity extends AppCompatActivity {
         infoLongitude.setContent(mRecord.getLongitude() + "");
 
         listInfos.add(infoDate);
+        listInfos.add(infoMode);
         listInfos.add(infoAndroidVersion);
         listInfos.add(infoAndroidApi);
         listInfos.add(infoDevice);

@@ -6,7 +6,6 @@ import android.util.Log;
 
 import java.util.List;
 
-import io.realm.Realm;
 import io.realm.RealmList;
 import rx.Observable;
 import rx.functions.Func4;
@@ -62,10 +61,6 @@ public class RecordManager {
                         record.setSignalRecord(signalRecord);
                         record.setConnectedTower(mCellTowerManager.getConnectedTower());
 
-                        Realm realm = Realm.getDefaultInstance();
-                        realm.beginTransaction();
-                        realm.copyToRealmOrUpdate(record);
-                        realm.commitTransaction();
                         return record;
                     }
                 });

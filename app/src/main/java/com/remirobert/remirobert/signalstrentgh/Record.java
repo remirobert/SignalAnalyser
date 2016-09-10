@@ -21,10 +21,19 @@ public class Record extends RealmObject {
     private double latitude;
     private double longitude;
     private Date mDate;
+    private String mMode;
 
     public Record() {
         mId = UUID.randomUUID().toString();
         mDate = new Date();
+    }
+
+    public String getMode() {
+        return mMode;
+    }
+
+    public void setMode(String mMode) {
+        this.mMode = mMode;
     }
 
     public Battery getBattery() {

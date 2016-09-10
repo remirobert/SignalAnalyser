@@ -1,18 +1,53 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
-        android:defaultValue="@string/pref_default_time_interval_seconds"
-        android:inputType="number"
-        android:key="time_interval"
-        android:maxLines="1"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="Record time interval" />
+    <PreferenceCategory android:title="Recording Setting">
+        <EditTextPreference
+            android:defaultValue="@string/pref_default_time_interval_seconds"
+            android:inputType="number"
+            android:key="time_interval"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Record time interval" />
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="delete_old_on_export"
-        android:title="Delete old data when export"
-        android:summary="If this turn on, all old data will be deleted when exporting" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="delete_old_on_export"
+            android:summary="If this turn on, all old data will be deleted when exporting"
+            android:title="Delete old data when export" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Traveling Mode Setting">
+        <ListPreference
+            android:defaultValue="0"
+            android:dialogTitle="Modes"
+            android:entries="@array/travel_mode"
+            android:entryValues="@array/travel_mode_value"
+            android:key="modes"
+            android:negativeButtonText="delete"
+            android:positiveButtonText="@null"
+            android:summary="All candidate modes"
+            android:title="Traveling modes" />
+
+        <EditTextPreference
+            android:inputType="text"
+            android:key="add_mode"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="Add a new mode permanently"
+            android:title="New mode" />
+
+        <EditTextPreference
+            android:inputType="text"
+            android:key="delete_mode"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="Delete a mode"
+            android:title="Delete mode" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>
