@@ -43,7 +43,10 @@ public class SignalStrenght extends Application {
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(getApplicationContext());
 
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
+                .schemaVersion(0)
+                .migration(new Migration())
+                .build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
