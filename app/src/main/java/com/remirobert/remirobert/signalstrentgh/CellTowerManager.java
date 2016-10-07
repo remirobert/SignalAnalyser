@@ -159,14 +159,14 @@ public class CellTowerManager {
         * decide which list will be used:
         * flag = 0, use cellInfoList,
         * flag = 1, use neighboringCellInfoList,
-        * flag = -1, return cellularTowerList directly, whose size = 0.
+        * flag = -1, use getCellLocation.
         * */
         int flag = 0;
         if (cellInfoList == null && neighboringCellInfoList == null) {
             flag = -1;
-        } else if (cellInfoList == null && neighboringCellInfoList != null) {
+        } else if (cellInfoList == null) {
             flag = 1;
-        } else if (cellInfoList != null && neighboringCellInfoList == null) {
+        }  else if (neighboringCellInfoList == null) {
             flag = 0;
         } else {
             flag = cellInfoList.size() > neighboringCellInfoList.size() ? 0 : 1;
@@ -216,13 +216,18 @@ public class CellTowerManager {
                 }
                 return cellularTowerList;
             }
+            case -1: {
+                CellularTower cellularTower = getConnectedTower();
+                if (cellularTower != null) {
+                    cellularTowerList.add(cellularTower);
+                }
+                return cellularTowerList;
+            }
             default: {
                 Log.v(TAG, "getAllCellInfo() & getNeighboringCellInfo() both return null");
                 return cellularTowerList;
             }
         }
-
-
     }
 
     private rx.Observable<CellularTower> locationTower(final CellularTower cellularTower) {
