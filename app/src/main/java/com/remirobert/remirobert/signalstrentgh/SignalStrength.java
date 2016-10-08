@@ -10,7 +10,7 @@ import io.realm.RealmConfiguration;
 /**
  * Created by remirobert on 23/07/16.
  */
-public class SignalStrenght extends Application {
+public class SignalStrength extends Application {
 
     private long mTimeInterval; // in milliseconds
     public SharedPreferences.OnSharedPreferenceChangeListener

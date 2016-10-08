@@ -78,17 +78,17 @@ public class SettingsActivity extends PreferenceActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SignalStrenght signalStrenght = (SignalStrenght) getApplication();
+        SignalStrength signalStrength = (SignalStrength) getApplication();
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                .registerOnSharedPreferenceChangeListener(signalStrenght.onSharedPreferenceChangeListener);
+                .registerOnSharedPreferenceChangeListener(signalStrength.onSharedPreferenceChangeListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        SignalStrenght signalStrenght = (SignalStrenght) getApplication();
+        SignalStrength signalStrength = (SignalStrength) getApplication();
         PreferenceManager.getDefaultSharedPreferences(getApplicationContext())
-                .unregisterOnSharedPreferenceChangeListener(signalStrenght.onSharedPreferenceChangeListener);
+                .unregisterOnSharedPreferenceChangeListener(signalStrength.onSharedPreferenceChangeListener);
     }
 
     /**

@@ -166,7 +166,7 @@ public class CellTowerManager {
             flag = -1;
         } else if (cellInfoList == null) {
             flag = 1;
-        }  else if (neighboringCellInfoList == null) {
+        } else if (neighboringCellInfoList == null) {
             flag = 0;
         } else {
             flag = cellInfoList.size() > neighboringCellInfoList.size() ? 0 : 1;

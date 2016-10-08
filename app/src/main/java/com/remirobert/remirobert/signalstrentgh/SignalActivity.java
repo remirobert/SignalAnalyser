@@ -66,8 +66,8 @@ public class SignalActivity extends AppCompatActivity {
             try {
                 checkPermissionUser2();
             } finally {
-                SignalStrenght signalStrenght = (SignalStrenght) getApplication();
-                mHandler.postDelayed(mDataCollection, signalStrenght.getmTimeInterval());
+                SignalStrength signalStrength = (SignalStrength) getApplication();
+                mHandler.postDelayed(mDataCollection, signalStrength.getmTimeInterval());
             }
         }
     };
